@@ -35,7 +35,7 @@ const Topbar = () => {
           direction="row"
           justifyContent="center"
         >
-          <Avatar src={avatarImage} sx={{ width: 70, height: 70 }} />
+          <Avatar src={avatarImage} sx={{ width: 70, height: 70 }} onClick={() => window.location.href = '/'}/>
         </Stack>
         <Typography variant="h6"></Typography>
         <Toolbar sx={{ marginBottom: "7px", marginTop: "5px" }}>

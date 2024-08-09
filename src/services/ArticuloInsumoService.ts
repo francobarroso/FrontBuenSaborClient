@@ -32,6 +32,18 @@ export async function ArticuloInsumoFindBySucursal(id: number, token: string){
 	return await response.json() as ArticuloInsumo[];
 }
 
+export async function ArticuloInsumoFindByEcommerce(){
+	const urlServer = 'http://localhost:8080/articuloInsumo/paraVenta';
+	const response = await fetch(urlServer, {
+		method: 'GET',
+        headers: {
+			'Content-type': 'application/json'
+		},
+        mode: 'cors'
+	});
+	return await response.json() as ArticuloInsumo[];
+}
+
 export async function ArticuloInsumoGetAll(token: string){
 	const urlServer = 'http://localhost:8080/articuloInsumo';
 	const response = await fetch(urlServer, {

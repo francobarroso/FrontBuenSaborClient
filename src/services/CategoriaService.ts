@@ -33,6 +33,18 @@ export async function CategoriaByEmpresaGetAll(id: number, token: string){
 	return await response.json() as CategoriaGetDto[];
 }
 
+export async function CategoriaByEcommerce(){
+	const urlServer = 'http://localhost:8080/categoria/findByEcommerce';
+	const response = await fetch(urlServer, {
+		method: 'GET',
+        headers: {
+			'Content-type': 'application/json'
+		},
+        mode: 'cors'
+	});
+	return await response.json() as CategoriaGetDto[];
+}
+
 export async function CategoriaGetAll(token: string){
 	const urlServer = 'http://localhost:8080/categoria';
 	const response = await fetch(urlServer, {

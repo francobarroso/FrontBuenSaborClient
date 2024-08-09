@@ -20,6 +20,19 @@ export async function ArticuloManufacturadoCreate(articuloManufacturado: Articul
 	};
 }
 
+
+export async function ArticuloManufacturadosFindByEcommerce(){
+	const urlServer = 'http://localhost:8080/articuloManufacturado/paraVenta';
+	const response = await fetch(urlServer, {
+		method: 'GET',
+        headers: {
+			'Content-type': 'application/json'
+		},
+        mode: 'cors'
+	});
+	return await response.json() as ArticuloManufacturado[];
+}
+
 export async function ArticuloManufacturadoFindBySucursal(id: number, token: string){
 	const urlServer = 'http://localhost:8080/articuloManufacturado/findBySucursal/' + id;
 	const response = await fetch(urlServer, {
