@@ -9,13 +9,25 @@ import ArticuloInsumo from "../types/ArticuloInsumo";
 import { ArticuloInsumoFindByEcommerce } from "../services/ArticuloInsumoService";
 import ArticuloManufacturado from "../types/ArticuloManufacturado";
 import { ArticuloManufacturadosFindByEcommerce } from "../services/ArticuloManufacturadoService";
+import { SucursalGetByEmpresaId } from "../services/SucursalService";
+import Sucursal from "../types/Sucursal";
+import HomeIcon from '@mui/icons-material/Home';
+import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 
 const Menu = () => {
+    const [sucursales, setSucursales] = useState<Sucursal[]>([]);
     const [categorias, setCategorias] = useState<CategoriaGetDto[]>([]);
     const [insumos, setInsumos] = useState<ArticuloInsumo[]>([]);
     const [manufacturados, setManufacturado] = useState<ArticuloManufacturado[]>([]);
     const [currentCategoria, setCurrentCategoria] = useState("Todas");
-    const [priceOrder, setPriceOrder] = useState("asc"); // Estado para el orden de precios
+    const [priceOrder, setPriceOrder] = useState("asc");
+    const [sucursalNombre, setCurrentSucursalNombre] = useState("");
+    const [sucursalHorario, setCurrentSucursalHorario] = useState("");
+
+    const getAllSucursal = async () => {
+        const sucursales: Sucursal[] = await SucursalGetByEmpresaId(1);
+        setSucursales(sucursales);
+    };
 
     const getAllCategorias = async () => {
         const categorias: CategoriaGetDto[] = await CategoriaByEcommerce();
@@ -50,81 +62,116 @@ const Menu = () => {
         getAllCategorias();
         getAllInsumos();
         getAllManufacturados();
-        const storedData = localStorage.getItem('categoria');
-        if (storedData) {
-            setCurrentCategoria(storedData);
-            localStorage.removeItem('categoria');
+        getAllSucursal();
+        const categoria = localStorage.getItem('categoria');
+        if (categoria) {
+            setCurrentCategoria(categoria);
+        }
+
+        const sucursalNombre = localStorage.getItem('sucursalNombre');
+        const sucursalHorario = localStorage.getItem('sucursalHorario');
+        if (sucursalNombre && sucursalHorario) {
+            setCurrentSucursalNombre(sucursalNombre);
+            setCurrentSucursalHorario(sucursalHorario);
         }
     }, []);
 
     return (
-        <Box mt={3} ml={3} mr={3} display="flex" alignItems="flex-start">
-            <Box padding={2} mr={2} flexBasis="18%" flexGrow={0} sx={{ border: "1px solid #c5c5c5", borderRadius: "15px" }}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Categorías {<IconButton><KeyboardArrowDownIcon /></IconButton>}</Typography>
-                <ListItemButton
-                    component="a"
-                    href="#simple-list"
-                    onClick={() => setCategoria("Todas")}
-                    selected={currentCategoria === "Todas"}
-                    sx={{ fontSize: "14px" }}
-                >
-                    <ListItemText primary="Todas" />
-                </ListItemButton>
-                {categorias.filter(categoria => !categoria.eliminado)
-                    .map((categoria) => (
-                        <ListItemButton
-                            component="a"
-                            href="#simple-list"
-                            key={categoria.id}
-                            onClick={() => setCategoria(categoria.denominacion)}
-                            selected={currentCategoria === categoria.denominacion}
-                            sx={{ fontSize: "14px" }}
-                        >
-                            <ListItemText primary={categoria.denominacion} />
-                        </ListItemButton>
-                    ))
+        <>
+            <Box mt={3} ml={3} borderRadius={2} bgcolor="#f5f5f5" boxShadow={2}>
+                {
+                    sucursalNombre !== "" && sucursalHorario !== "" ? (
+                        <>
+                            <Typography variant="h5" color="primary" display="flex" alignItems="center" gutterBottom>
+                                <HomeIcon style={{ marginRight: '8px' }} /> {sucursalNombre}
+                                </Typography>
+                            <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
+                                <QueryBuilderIcon style={{ marginRight: '8px' }} /> {sucursalHorario}
+                                </Typography>
+                        </>
+                    ) :
+                        sucursales.filter(sucursal => sucursal.esCasaMatriz)
+                            .map((sucursal) => (
+                                <Box key={sucursal.id} mb={2}>
+                                    <Typography variant="h5" color="primary" display="flex" alignItems="center" gutterBottom>
+                                        <HomeIcon style={{ marginRight: '8px' }} /> {sucursal.nombre}
+                                    </Typography>
+                                    <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
+                                        <QueryBuilderIcon style={{ marginRight: '8px' }} /> {sucursal.horarioApertura} - {sucursal.horarioCierre}
+                                    </Typography>
+                                </Box>
+                            ))
                 }
             </Box>
-            <Box padding={2} flexBasis="50%" flexGrow={1} mx={2} sx={{ border: "1px solid #c5c5c5", borderRadius: "20px" }}>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{currentCategoria}</Typography>
-                    <Select
-                        value={priceOrder}
-                        onChange={handlePriceOrderChange}
-                        displayEmpty
-                        inputProps={{ 'aria-label': 'Ordenar por precio' }}
-                        size="small"
-                        sx={{ minWidth: 120 }}
+            <Box mt={3} ml={3} mr={3} display="flex" alignItems="flex-start">
+                <Box padding={2} mr={2} flexBasis="18%" flexGrow={0} sx={{ border: "1px solid #c5c5c5", borderRadius: "15px" }}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Categorías {<IconButton><KeyboardArrowDownIcon /></IconButton>}</Typography>
+                    <ListItemButton
+                        component="a"
+                        href="#simple-list"
+                        onClick={() => setCategoria("Todas")}
+                        selected={currentCategoria === "Todas"}
+                        sx={{ fontSize: "14px" }}
                     >
-                        <MenuItem value="asc">Precio: Menor a Mayor</MenuItem>
-                        <MenuItem value="desc">Precio: Mayor a Menor</MenuItem>
-                    </Select>
+                        <ListItemText primary="Todas" />
+                    </ListItemButton>
+                    {categorias.filter(categoria => !categoria.eliminado)
+                        .map((categoria) => (
+                            <ListItemButton
+                                component="a"
+                                href="#simple-list"
+                                key={categoria.id}
+                                onClick={() => setCategoria(categoria.denominacion)}
+                                selected={currentCategoria === categoria.denominacion}
+                                sx={{ fontSize: "14px" }}
+                            >
+                                <ListItemText primary={categoria.denominacion} />
+                            </ListItemButton>
+                        ))
+                    }
                 </Box>
-                <Grid container spacing={2}>
-                    {sortItemsByPrice(manufacturados
-                        .filter(manufacturado => currentCategoria === "Todas" || manufacturado.categoria.denominacion === currentCategoria))
-                        .map((manufacturado) => (
-                            <Grid item xs={12} sm={6} key={manufacturado.id}>
-                                <ProductoCard articulo={manufacturado} />
-                            </Grid>
-                        ))}
-                    {sortItemsByPrice(insumos
-                        .filter(insumo => currentCategoria === "Todas" || insumo.categoria.denominacion === currentCategoria))
-                        .map((insumo) => (
-                            <Grid item xs={12} sm={6} key={insumo.id}>
-                                <ProductoCard articulo={insumo} />
-                            </Grid>
-                        ))}
-                </Grid>
+                <Box padding={2} flexBasis="50%" flexGrow={1} mx={2} sx={{ border: "1px solid #c5c5c5", borderRadius: "20px" }}>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{currentCategoria}</Typography>
+                        <Select
+                            value={priceOrder}
+                            onChange={handlePriceOrderChange}
+                            displayEmpty
+                            inputProps={{ 'aria-label': 'Ordenar por precio' }}
+                            size="small"
+                            sx={{ minWidth: 120 }}
+                        >
+                            <MenuItem value="asc">Precio: Menor a Mayor</MenuItem>
+                            <MenuItem value="desc">Precio: Mayor a Menor</MenuItem>
+                        </Select>
+                    </Box>
+                    <Grid container spacing={2}>
+                        {sortItemsByPrice(manufacturados
+                            .filter(manufacturado => currentCategoria === "Todas" || manufacturado.categoria.denominacion === currentCategoria))
+                            .map((manufacturado) => (
+                                <Grid item xs={12} sm={6} key={manufacturado.id}>
+                                    <ProductoCard articulo={manufacturado} />
+                                </Grid>
+                            ))}
+                        {sortItemsByPrice(insumos
+                            .filter(insumo => currentCategoria === "Todas" || insumo.categoria.denominacion === currentCategoria))
+                            .map((insumo) => (
+                                <Grid item xs={12} sm={6} key={insumo.id}>
+                                    <ProductoCard articulo={insumo} />
+                                </Grid>
+                            ))}
+                    </Grid>
+                </Box>
+                <Box padding={2} ml={2} flexBasis="25%" flexGrow={0} sx={{ border: "1px solid #c5c5c5", borderRadius: "20px" }}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Mi pedido</Typography>
+                    <Stack direction="column" alignItems="center">
+                        <SearchIcon sx={{ color: "#b6bfbe", fontSize: 100 }} />
+                        <Typography variant="body2">Tu pedido está vacío.</Typography>
+                    </Stack>
+                </Box>
             </Box>
-            <Box padding={2} ml={2} flexBasis="25%" flexGrow={0} sx={{ border: "1px solid #c5c5c5", borderRadius: "20px" }}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Mi pedido</Typography>
-                <Stack direction="column" alignItems="center">
-                    <SearchIcon sx={{ color: "#b6bfbe", fontSize: 100 }} />
-                    <Typography variant="body2">Tu pedido está vacío.</Typography>
-                </Stack>
-            </Box>
-        </Box>
+        </>
+
     );
 }
 

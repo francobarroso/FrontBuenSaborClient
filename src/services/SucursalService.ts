@@ -19,13 +19,12 @@ export async function SucursalCreate(sucursal: Sucursal, token: string){
 	};
 }
 
-export async function SucursalGetByEmpresaId(id: number, token: string){
+export async function SucursalGetByEmpresaId(id: number){
 	const urlServer = 'http://localhost:8080/sucursal/empresa/' + id;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
-			'Authorization': `Bearer ${token}`,
-			'Content-type': 'application/json',
+			'Content-type': 'application/json'
 		},
         mode: 'cors'
 	});

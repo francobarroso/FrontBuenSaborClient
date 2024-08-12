@@ -1,14 +1,14 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './VistaCiudadano.css';
 import fondoNegro from '../assets/images/fondoNegroCarrousel.jpg';
+import fondoMarron from '../assets/images/maderamarron.jpg';
 import portada from '../assets/images/imgPortada.png';
 import { useEffect, useState } from 'react';
 import Sucursal from '../types/Sucursal';
-import SucursalCard from '../components/iu/Sucursal/SucursalCard';
-import { SucursalGetAll } from '../services/SucursalService';
-import { useAuth0 } from '@auth0/auth0-react';
+import { SucursalGetByEmpresaId } from '../services/SucursalService';
 import CategoriaGetDto from '../types/CategoriaGetDto';
 import { CategoriaByEcommerce } from '../services/CategoriaService';
+import SucursalCard from '../components/iu/Sucursal/SucursalCard';
 
 const VistaCiudadano = () => {
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -17,34 +17,23 @@ const VistaCiudadano = () => {
         const categorias: CategoriaGetDto[] = await CategoriaByEcommerce();
         setCategorias(categorias);
     };
-    const { getAccessTokenSilently } = useAuth0();
-
 
     const getAllSucursal = async () => {
-        const token = await getAccessTokenSilently({
-            authorizationParams: {
-                audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-            },
-        });
-
-        const sucursales: Sucursal[] = await SucursalGetAll(token);
+        const sucursales: Sucursal[] = await SucursalGetByEmpresaId(1);
         setSucursales(sucursales);
     };
 
     useEffect(() => {
         getAllSucursal();
         getAllCategorias();
+        localStorage.removeItem('categoria');
     }, []);
-
-    //revisar y aplicar metodo handleclose
-    function handleClose(): void {
-        throw new Error('Function not implemented / not available.');
-    }
 
     const handleClick = (denominacion: string) => {
         localStorage.setItem('categoria', denominacion);
         window.location.href = '/menu';
-      };
+        window.scrollTo(0, 0);
+    };
 
     return (
         <>
@@ -117,7 +106,7 @@ const VistaCiudadano = () => {
             }}>
                 <h1 style={{ marginLeft: '30px', color: 'white', fontSize: '1.7rem', textAlign: 'left' }}>Sucursales</h1>
             </div>
-            <div>
+            <div style={{backgroundImage: `url(${fondoMarron})`}}>
 
                 <div style={{
                     display: 'flex',
@@ -128,8 +117,9 @@ const VistaCiudadano = () => {
                     padding: '10px',
                 }}>
                     {sucursales.map((sucursal) => (
-                        <SucursalCard key={sucursal.id} onClose={handleClose} sucursal={sucursal} />
+                        <SucursalCard key={sucursal.id} sucursal={sucursal} />
                     ))}
+
                 </div>
 
             </div>
