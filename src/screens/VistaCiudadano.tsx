@@ -13,6 +13,7 @@ import SucursalCard from '../components/iu/Sucursal/SucursalCard';
 const VistaCiudadano = () => {
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
     const [categorias, setCategorias] = useState<CategoriaGetDto[]>([]);
+    
     const getAllCategorias = async () => {
         const categorias: CategoriaGetDto[] = await CategoriaByEcommerce();
         setCategorias(categorias);
@@ -31,7 +32,7 @@ const VistaCiudadano = () => {
 
     const handleClick = (denominacion: string) => {
         localStorage.setItem('categoria', denominacion);
-        window.location.href = '/menu';
+        window.location.href = '/sucursales';
         window.scrollTo(0, 0);
     };
 
