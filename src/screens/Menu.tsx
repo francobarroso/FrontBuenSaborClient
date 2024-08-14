@@ -45,6 +45,7 @@ const Menu = () => {
     };
 
     const setCategoria = (denominacion: string) => {
+        localStorage.setItem('categoria', denominacion);
         setCurrentCategoria(denominacion);
     };
 
@@ -82,7 +83,7 @@ const Menu = () => {
                 {
                     sucursalNombre !== "" && sucursalHorario !== "" ? (
                         <>
-                            <Typography variant="h5" color="primary" display="flex" alignItems="center" gutterBottom>
+                            <Typography variant="h5" sx={{color: "#415a81"}} display="flex" alignItems="center" gutterBottom>
                                 <HomeIcon style={{ marginRight: '8px' }} /> {sucursalNombre}
                                 </Typography>
                             <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
@@ -93,7 +94,7 @@ const Menu = () => {
                         sucursales.filter(sucursal => sucursal.esCasaMatriz)
                             .map((sucursal) => (
                                 <Box key={sucursal.id} mb={2}>
-                                    <Typography variant="h5" color="primary" display="flex" alignItems="center" gutterBottom>
+                                    <Typography variant="h5" sx={{color: "#415a81"}} display="flex" alignItems="center" gutterBottom>
                                         <HomeIcon style={{ marginRight: '8px' }} /> {sucursal.nombre}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
@@ -110,8 +111,7 @@ const Menu = () => {
                         component="a"
                         href="#simple-list"
                         onClick={() => setCategoria("Todas")}
-                        selected={currentCategoria === "Todas"}
-                        sx={{ fontSize: "14px" }}
+                        sx={{ fontSize: "14px", color: currentCategoria === "Todas" ? "#415a81" : "defaultColor" }}
                     >
                         <ListItemText primary="Todas" />
                     </ListItemButton>
@@ -119,11 +119,10 @@ const Menu = () => {
                         .map((categoria) => (
                             <ListItemButton
                                 component="a"
-                                href="#simple-list"
                                 key={categoria.id}
                                 onClick={() => setCategoria(categoria.denominacion)}
                                 selected={currentCategoria === categoria.denominacion}
-                                sx={{ fontSize: "14px" }}
+                                sx={{ fontSize: "14px", color: currentCategoria === categoria.denominacion ? "#415a81" : "defaultColor" }}
                             >
                                 <ListItemText primary={categoria.denominacion} />
                             </ListItemButton>

@@ -1,23 +1,28 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Button } from "@mui/material";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
   return (
     <Button
-      variant="contained"
-      color="primary"
+      sx={{
+        backgroundColor: "#233044",
+        color: "#eeeeee",
+        '&:hover': {
+          backgroundColor: "#233044",
+          color: "#b0b0b0"
+        }
+      }}
       onClick={() =>
         loginWithRedirect({
           appState: {
-            returnTo: '/empresa',
+            returnTo: '/',
           },
         })
       }
     >
-     <AccountCircleIcon/> Ingresar
+      Ingresar
     </Button>
   );
 };

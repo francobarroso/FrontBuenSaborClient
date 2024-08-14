@@ -1,20 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardActions, CardMedia, CardContent, Typography, Grid, Box, IconButton } from "@mui/material";
 import ArticuloInsumo from '../../../types/ArticuloInsumo';
 import ArticuloManufacturado from '../../../types/ArticuloManufacturado';
-import StarIcon from '@mui/icons-material/Star';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ProductoView from './ProductoView';
 
 interface ProductosProps {
     articulo: ArticuloInsumo | ArticuloManufacturado;
-    esMasVendido?: boolean;
 }
 
-const ProductoCard: React.FC<ProductosProps> = ({ articulo, esMasVendido }) => {
+const ProductoCard: React.FC<ProductosProps> = ({ articulo }) => {
+    const [open, setOpen] = useState(false);
+    const [images, setImages] = useState<string[]>([]);
 
     const esArticuloManufacturado = (articulo: ArticuloInsumo | ArticuloManufacturado): articulo is ArticuloManufacturado => {
         return 'descripcion' in articulo;
     };
+
+    const handleOpen = () => {
+        setImages(articulo.imagenes.map(imagen => imagen.url));
+        setOpen(true);
+    } 
+
+    const handleClose = () => {
+        setOpen(false);
+    } 
 
     return (
         <Card
@@ -28,14 +38,6 @@ const ProductoCard: React.FC<ProductosProps> = ({ articulo, esMasVendido }) => {
                 position: 'relative',
             }}
         >
-            {esMasVendido && (
-                <Box style={{ position: 'absolute', top: '8px', left: '8px', backgroundColor: '#ffefef', borderRadius: '4px', padding: '4px 8px' }}>
-                    <Typography variant="caption" style={{ fontWeight: 'bold', color: '#d32f2f' }}>
-                        <StarIcon style={{ fontSize: '16px', marginRight: '4px' }} />
-                        MÁS VENDIDO
-                    </Typography>
-                </Box>
-            )}
             <CardContent style={{ padding: 0 }}>
                 <Grid container spacing={0}>
                     <Grid item xs={8} style={{ padding: '16px' }}>
@@ -55,7 +57,7 @@ const ProductoCard: React.FC<ProductosProps> = ({ articulo, esMasVendido }) => {
                         <Typography variant="body2" color="textSecondary" noWrap>
                             {esArticuloManufacturado(articulo) ? articulo.descripcion : '...'}
                         </Typography>
-                        <Typography variant="body2" color="primary" style={{ marginTop: '8px', fontWeight: 'bold' }}>
+                        <Typography variant="body2" color="primary" style={{ marginTop: '8px', fontWeight: 'bold', cursor: 'pointer' }} onClick={handleOpen}>
                             Ver Detalles
                         </Typography>
                     </Grid>
@@ -91,6 +93,8 @@ const ProductoCard: React.FC<ProductosProps> = ({ articulo, esMasVendido }) => {
             <CardActions style={{ justifyContent: 'space-between', padding: '0 16px 16px 16px' }}>
                 {/* Aquí puedes agregar más botones o acciones si es necesario */}
             </CardActions>
+
+            <ProductoView articulo={articulo} open={open} onClose={handleClose} images={images}/>
         </Card>
     );
 }

@@ -16,9 +16,15 @@ import { useAuth0 } from "@auth0/auth0-react";
 import avatarImage from "../../assets/images/logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import RegisterButton from "./RegisterButton";
 
 const Topbar = () => {
   const { isAuthenticated } = useAuth0();
+
+  const handleMenu = () => {
+    localStorage.removeItem('categoria');
+    window.location.href = '/menu'
+  }
 
   return (
     <AppBar
@@ -67,10 +73,10 @@ const Topbar = () => {
 
         <Stack direction="row" alignItems="center" spacing={3}>
           <IconButton
-            onClick={() => window.location.href = '/menu'}
+            onClick={handleMenu}
             sx={{
               color: "#EEEEEE",
-              "&:hover": { color: "#5f7faf" },
+              "&:hover": { color: "#5f7faf", backgroundColor: "#233044" },
             }}
           >
             <MenuIcon />
@@ -93,7 +99,7 @@ const Topbar = () => {
             onClick={() => window.location.href = '/promociones'}
             sx={{
               color: "#EEEEEE",
-              "&:hover": { color: "#5f7faf" },
+              "&:hover": { color: "#5f7faf", backgroundColor: "#233044" },
             }}
           >
             <LocalOfferIcon />
@@ -112,7 +118,7 @@ const Topbar = () => {
         </Stack>
 
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+          {isAuthenticated ? <LogoutButton /> : <><LoginButton /> <RegisterButton /></>}
         </Box>
       </Toolbar>
     </AppBar>

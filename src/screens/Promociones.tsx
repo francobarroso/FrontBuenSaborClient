@@ -53,7 +53,7 @@ const Promociones = () => {
                 {
                     sucursalNombre !== "" && sucursalHorario !== "" ? (
                         <>
-                            <Typography variant="h5" color="primary" display="flex" alignItems="center" gutterBottom>
+                            <Typography variant="h5" sx={{color: "#415a81"}} display="flex" alignItems="center" gutterBottom>
                                 <HomeIcon style={{ marginRight: '8px' }} /> {sucursalNombre}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
@@ -64,7 +64,7 @@ const Promociones = () => {
                         sucursales.filter(sucursal => sucursal.esCasaMatriz)
                             .map((sucursal) => (
                                 <Box key={sucursal.id} mb={2}>
-                                    <Typography variant="h5" color="primary" display="flex" alignItems="center" gutterBottom>
+                                    <Typography variant="h5" sx={{color: "#415a81"}} display="flex" alignItems="center" gutterBottom>
                                         <HomeIcon style={{ marginRight: '8px' }} /> {sucursal.nombre}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
