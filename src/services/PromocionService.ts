@@ -20,6 +20,18 @@ export async function PromocionCreate(promocion: Promocion, token: string){
 	};
 }
 
+export async function PromocionFindByEcommerce(){
+	const urlServer = 'http://localhost:8080/promocion/findByEcommerce';
+	const response = await fetch(urlServer, {
+		method: 'GET',
+        headers: {
+			'Content-type': 'application/json'
+		},
+        mode: 'cors'
+	});
+	return await response.json() as Promocion[];
+}
+
 export async function PromocionFindBySucursal(id: number, token: string){
 	const urlServer = 'http://localhost:8080/promocion/findBySucursal/' + id;
 	const response = await fetch(urlServer, {

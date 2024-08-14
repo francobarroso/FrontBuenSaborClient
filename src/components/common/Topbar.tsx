@@ -1,10 +1,21 @@
-import { AppBar, Toolbar, Typography, Box, Avatar, Stack, ListItemButton, ListItemText } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  Avatar,
+  Stack,
+  IconButton,
+  Divider,
+} from "@mui/material";
 import colorConfigs from "../../configs/colorConfig";
 import sizeConfigs from "../../configs/sizeConfig";
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 import { useAuth0 } from "@auth0/auth0-react";
-import avatarImage from '../../assets/images/logo.png';
+import avatarImage from "../../assets/images/logo.png";
+import MenuIcon from "@mui/icons-material/Menu";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 
 const Topbar = () => {
   const { isAuthenticated } = useAuth0();
@@ -13,13 +24,14 @@ const Topbar = () => {
     <AppBar
       position="fixed"
       sx={{
-        width: `calc(100% - 0)`,
+        width: `calc(100% - ${sizeConfigs.sidebar.width}px)`,
         ml: sizeConfigs.sidebar.width,
         boxShadow: "unset",
         backgroundColor: colorConfigs.topbar.bg,
         color: colorConfigs.topbar.color,
-        borderBottomLeftRadius: '20px',
-        borderBottomRightRadius: '20px'
+        borderBottomLeftRadius: "20px",
+        borderBottomRightRadius: "20px",
+        padding: "0 20px",
       }}
     >
       <Toolbar
@@ -27,61 +39,80 @@ const Topbar = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          position: "relative"
+          padding: "10px 0",
         }}
       >
-        <Stack
-          sx={{ width: "250px" }}
-          direction="row"
-          justifyContent="center"
-        >
-          <Avatar src={avatarImage} sx={{ width: 70, height: 70 }} onClick={() => window.location.href = '/'}/>
-        </Stack>
-        <Typography variant="h6"></Typography>
-        <Toolbar sx={{ marginBottom: "7px", marginTop: "5px" }}>
-          <Stack
-            sx={{ width: "100%" }}
-            direction="row"
-            justifyContent="right"
-          >
-            <Typography variant="h5" noWrap style={{ cursor: 'pointer', marginLeft: '20px', alignContent: 'center', color: '#EEEEEE', fontWeight: 'bold', letterSpacing: '3px', fontFamily: 'Cascadia code, sans-serif' }} onClick={() => window.location.href = '/'}>
-              El Buen Sabor |
-            </Typography>
-          </Stack>
-          <ListItemButton onClick={() => window.location.href = '/menu'}
+        <Stack direction="row" alignItems="center">
+          <Avatar
+            src={avatarImage}
+            sx={{ width: 50, height: 50, cursor: "pointer" }}
+            onClick={() => window.location.href = '/'}
+          />
+          <Typography
+            variant="h5"
+            noWrap
             sx={{
-              '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              }
+              ml: 2,
+              color: "#EEEEEE",
+              fontWeight: "bold",
+              letterSpacing: "2px",
+              fontFamily: "Courier",
+              cursor: "pointer",
+            }}
+            onClick={() => window.location.href = '/'}
+          >
+            El Buen Sabor
+          </Typography>
+        </Stack>
+
+        <Stack direction="row" alignItems="center" spacing={3}>
+          <IconButton
+            onClick={() => window.location.href = '/menu'}
+            sx={{
+              color: "#EEEEEE",
+              "&:hover": { color: "#5f7faf" },
             }}
           >
-            <ListItemText
-              primary="MENÚ"
-              primaryTypographyProps={{
-                style: {
-                  fontSize: '15px',
-                  fontWeight: 'bold',
-                  fontFamily: 'century, sans-serif',
-                  marginRight: '5px'
-                }
+            <MenuIcon />
+            <Typography
+              variant="body1"
+              sx={{
+                ml: 1,
+                fontSize: "15px",
+                fontWeight: "bold",
+                fontFamily: "century, sans-serif",
               }}
-            />
-          </ListItemButton>
-        </Toolbar>
+            >
+              MENÚ
+            </Typography>
+          </IconButton>
 
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            width: "100%"
-          }}
-        >
-          {isAuthenticated ? (
-            <LogoutButton />
-          ) : (
-            <LoginButton />
-          )}
+          <Divider orientation="vertical" flexItem sx={{ bgcolor: "#EEEEEE" }} />
+
+          <IconButton
+            onClick={() => window.location.href = '/promociones'}
+            sx={{
+              color: "#EEEEEE",
+              "&:hover": { color: "#5f7faf" },
+            }}
+          >
+            <LocalOfferIcon />
+            <Typography
+              variant="body1"
+              sx={{
+                ml: 1,
+                fontSize: "15px",
+                fontWeight: "bold",
+                fontFamily: "century, sans-serif",
+              }}
+            >
+              PROMOCIONES
+            </Typography>
+          </IconButton>
+        </Stack>
+
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {isAuthenticated ? <LogoutButton /> : <LoginButton />}
         </Box>
       </Toolbar>
     </AppBar>

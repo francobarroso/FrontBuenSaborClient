@@ -3,6 +3,7 @@ import PreLayout from "./components/layout/PreLayout";
 import VistaCiudadano from "./screens/VistaCiudadano";
 import Menu from "./screens/Menu";
 import Sucursales from "./screens/Sucursales";
+import Promociones from "./screens/Promociones";
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<VistaCiudadano />} />
           <Route path="/sucursales" element={<Sucursales /> }/>
           <Route path="/menu" element={<Menu />} />
+          <Route path="/promociones" element={<Promociones />} />
         </Route>
       </Routes>
     </>
