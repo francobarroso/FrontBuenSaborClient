@@ -2,6 +2,7 @@ import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { useCarrito } from "../../../hooks/useCarrito";
 import { ItemCarrito } from "./ItemCarrito";
+import colorConfigs from "../../../configs/colorConfig";
 
 const Carrito = () => {
     const { carrito, totalPedido } = useCarrito();
@@ -24,7 +25,7 @@ const Carrito = () => {
                         {carrito.map((detalle, index) => (
                             <Box key={index}>
                                 <ItemCarrito
-                                    item={detalle.articulo}
+                                    item={detalle}
                                     cantidad={detalle.cantidad}
                                 />
                             </Box>
@@ -40,9 +41,10 @@ const Carrito = () => {
 
                     <Button
                         variant="contained"
-                        color="primary"
                         fullWidth
-                        sx={{ py: 1.5, fontWeight: 'bold' }}
+                        sx={{
+                            py: 1.5, fontWeight: 'bold', ...colorConfigs.buttonStyles
+                        }}
                     >
                         Finalizar Pedido
                     </Button>

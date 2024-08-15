@@ -19,7 +19,7 @@ const ProductoCard: React.FC<ProductosProps> = ({ articulo }) => {
     const { carrito, addCarrito, removeCarrito, removeItemCarrito } = useCarrito();
 
     const verificarArticuloCarrito = (product: ArticuloManufacturado | ArticuloInsumo) => {
-        return carrito.some(item => String(item.articulo.id) === String(product.id));
+        return carrito.some(item => String(item.articulo && item.articulo.id) === String(product.id));
     };
 
     const isArticuloCarrito = verificarArticuloCarrito(articulo);

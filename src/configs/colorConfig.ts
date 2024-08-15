@@ -10,22 +10,13 @@ const colorConfigs = {
     color: "#eeeeee"
   },
   buttonStyles: {
-    backgroundColor: "#233044",
+    backgroundColor: "#415a81",
     '&:hover': {
-      backgroundColor: "#48576f"
+      backgroundColor: "#334767"
     }
   },
-  backButtonStyles: {
-    backgroundColor: "#59697f",
-    '&:hover': {
-      backgroundColor: "#6e7d92"
-    }
-  },
-  buttonIngresar: {
-    backgroundColor: "#1c1c1c",
-    '&:hover': {
-      backgroundColor: "#424242"
-    }
+  textStyles: {
+    color: "#415a81"
   }
 };
 

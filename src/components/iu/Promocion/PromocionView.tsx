@@ -1,10 +1,10 @@
-import { Avatar, Box, Button, IconButton, Modal, Typography } from "@mui/material";
+import { Avatar, Box, IconButton, Modal, Typography } from "@mui/material";
 import { useState } from "react";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import colorConfigs from "../../../configs/colorConfig"
 import Promocion from "../../../types/Promocion";
 import PromocionDetalle from "../../../types/PromocionDetalle";
+import CloseIcon from '@mui/icons-material/Close';
 
 interface PromocionProps {
     promocion: Promocion;
@@ -52,6 +52,9 @@ const PromocionView: React.FC<PromocionProps> = ({ promocion, open, onClose, ima
                         flexDirection: 'column',
                     }}
                 >
+                    <IconButton onClick={onClose} sx={{ position: 'absolute', top: 8, right: 8 }}>
+                        <CloseIcon />
+                    </IconButton>
                     <Typography variant="h5" gutterBottom align="center">
                         {currentPromocion.denominacion}
                     </Typography>
@@ -85,11 +88,6 @@ const PromocionView: React.FC<PromocionProps> = ({ promocion, open, onClose, ima
                             </Typography>
                         </Box>
                     ))}
-                    <Box display="flex" justifyContent="flex-end" mt={2}>
-                        <Button variant="contained" onClick={handleClose} sx={{ ...colorConfigs.buttonStyles }}>
-                            Cerrar
-                        </Button>
-                    </Box>
                 </Box>
             </Modal>
         </>

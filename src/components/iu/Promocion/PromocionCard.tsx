@@ -1,8 +1,13 @@
-import { Box, Card, CardActions, CardContent, CardMedia, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, Grid, IconButton, Typography } from "@mui/material";
 import Promocion from "../../../types/Promocion";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import PromocionView from "./PromocionView";
 import { useState } from "react";
+import { useCarrito } from "../../../hooks/useCarrito";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 interface PromocionProps {
     promocion: Promocion;
@@ -11,6 +16,13 @@ interface PromocionProps {
 const PromocionCard: React.FC<PromocionProps> = ({ promocion }) => {
     const [open, setOpen] = useState(false);
     const [images, setImages] = useState<string[]>([]);
+    const { carrito, addPromocionCarrito, removeCarrito, removeItemCarrito } = useCarrito();
+
+    const verificarPromocionCarrito = (promocion: Promocion) => {
+        return carrito.some(item => String(item.promocion && item.promocion.id) === String(promocion.id));
+    };
+
+    const isPromocionCarrito = verificarPromocionCarrito(promocion);
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -90,16 +102,30 @@ const PromocionCard: React.FC<PromocionProps> = ({ promocion }) => {
                             </IconButton>
                         </Grid>
                     </Grid>
-                    <Box style={{ padding: '16px' }}>
+                    <Box style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="h6" style={{ fontWeight: 'bold' }}>
                             ${promocion.precioPromocional && promocion.precioPromocional.toFixed(2)}
                         </Typography>
+                        <Box>
+                            {
+                                !isPromocionCarrito ? (
+                                    <Box>
+                                        <RemoveIcon sx={{ color: "grey" }} />
+                                        <AddShoppingCartIcon sx={{ cursor: "pointer", color: "green" }} onClick={() => addPromocionCarrito(promocion)} />
+                                        <AddIcon sx={{ cursor: "pointer" }} onClick={() => addPromocionCarrito(promocion)} />
+                                    </Box>
+                                ) : (
+                                    <Box>
+                                        <RemoveIcon sx={{ cursor: "pointer" }} onClick={() => removeItemCarrito(promocion)} />
+                                        <RemoveShoppingCartIcon sx={{ cursor: "pointer", color: "red" }} onClick={() => removeCarrito(promocion)} />
+                                        <AddIcon sx={{ cursor: "pointer" }} onClick={() => addPromocionCarrito(promocion)} />
+                                    </Box>
+                                )
+                            }
+                        </Box>
                     </Box>
                 </CardContent>
-                <CardActions style={{ justifyContent: 'space-between', padding: '0 16px 16px 16px' }}>
-                    {/* Aquí puedes agregar más botones o acciones si es necesario */}
-                </CardActions>
-                <PromocionView promocion={promocion} open={open} onClose={handleClose} images={images}/>
+                <PromocionView promocion={promocion} open={open} onClose={handleClose} images={images} />
             </Card>
         </>
     )

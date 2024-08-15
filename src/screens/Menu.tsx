@@ -13,6 +13,7 @@ import Sucursal from "../types/Sucursal";
 import HomeIcon from '@mui/icons-material/Home';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import Carrito from "../components/iu/Carrito/Carrito";
+import colorConfigs from "../configs/colorConfig";
 
 const Menu = () => {
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -83,7 +84,7 @@ const Menu = () => {
                 {
                     sucursalNombre !== "" && sucursalHorario !== "" ? (
                         <>
-                            <Typography variant="h5" sx={{color: "#415a81"}} display="flex" alignItems="center" gutterBottom>
+                            <Typography variant="h5" sx={{...colorConfigs.textStyles}} display="flex" alignItems="center" gutterBottom>
                                 <HomeIcon style={{ marginRight: '8px' }} /> {sucursalNombre}
                                 </Typography>
                             <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
@@ -94,7 +95,7 @@ const Menu = () => {
                         sucursales.filter(sucursal => sucursal.esCasaMatriz)
                             .map((sucursal) => (
                                 <Box key={sucursal.id} mb={2}>
-                                    <Typography variant="h5" sx={{color: "#415a81"}} display="flex" alignItems="center" gutterBottom>
+                                    <Typography variant="h5" sx={{...colorConfigs.textStyles}} display="flex" alignItems="center" gutterBottom>
                                         <HomeIcon style={{ marginRight: '8px' }} /> {sucursal.nombre}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">

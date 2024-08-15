@@ -1,10 +1,10 @@
-import { Box, Button, IconButton, Modal, Typography } from "@mui/material";
+import { Box, IconButton, Modal, Typography } from "@mui/material";
 import ArticuloInsumo from "../../../types/ArticuloInsumo";
 import ArticuloManufacturado from "../../../types/ArticuloManufacturado";
 import { useState } from "react";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import colorConfigs from "../../../configs/colorConfig"
+import CloseIcon from '@mui/icons-material/Close';
 
 interface ProductosProps {
     articulo: ArticuloInsumo | ArticuloManufacturado;
@@ -54,6 +54,9 @@ const ProductoView: React.FC<ProductosProps> = ({ articulo, open, onClose, image
                         flexDirection: 'column',
                     }}
                 >
+                    <IconButton onClick={onClose} sx={{ position: 'absolute', top: 8, right: 8 }}>
+                        <CloseIcon />
+                    </IconButton>
                     <Typography variant="h5" gutterBottom align="center">
                         {currentArticulo.denominacion}
                     </Typography>
@@ -78,11 +81,6 @@ const ProductoView: React.FC<ProductosProps> = ({ articulo, open, onClose, image
                     <Typography variant="body2" gutterBottom align="left">
                         {esArticuloManufacturado(articulo) ? articulo.descripcion : '...'}
                     </Typography>
-                    <Box display="flex" justifyContent="flex-end" mt={2}>
-                        <Button variant="contained" onClick={handleClose} sx={{ ...colorConfigs.buttonStyles }}>
-                            Cerrar
-                        </Button>
-                    </Box>
                 </Box>
             </Modal>
         </>

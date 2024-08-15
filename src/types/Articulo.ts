@@ -5,7 +5,7 @@ import UnidadMedida from "./UnidadMedida";
 
 export default interface Articulo extends Base{
     denominacion: string,
-    precioVenta: number | null,
+    precioVenta: number,
     habilitado: boolean,
     imagenes: Imagen[],
     unidadMedida: UnidadMedida,

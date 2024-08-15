@@ -21,8 +21,8 @@ const RegisterButton = () => {
                 color: "#eeeeee",
                 border: "1px solid #415a81",
                 '&:hover': {
-                    backgroundColor: "#344a61",
-                    borderColor: "#344a61"
+                    backgroundColor: "#334767",
+                    borderColor: "#334767"
                 }
             }}
         >
