@@ -1,5 +1,4 @@
-import { Box, Grid, IconButton, ListItemButton, ListItemText, MenuItem, Select, Stack, Typography } from "@mui/material";
-import SearchIcon from '@mui/icons-material/Search';
+import { Box, Grid, IconButton, ListItemButton, ListItemText, MenuItem, Select, Typography } from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useEffect, useState } from "react";
 import CategoriaGetDto from "../types/CategoriaGetDto";
@@ -13,6 +12,7 @@ import { SucursalGetByEmpresaId } from "../services/SucursalService";
 import Sucursal from "../types/Sucursal";
 import HomeIcon from '@mui/icons-material/Home';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
+import Carrito from "../components/iu/Carrito/Carrito";
 
 const Menu = () => {
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -162,11 +162,7 @@ const Menu = () => {
                     </Grid>
                 </Box>
                 <Box padding={2} ml={2} flexBasis="25%" flexGrow={0} sx={{ border: "1px solid #c5c5c5", borderRadius: "20px" }}>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Mi pedido</Typography>
-                    <Stack direction="column" alignItems="center">
-                        <SearchIcon sx={{ color: "#b6bfbe", fontSize: 100 }} />
-                        <Typography variant="body2">Tu pedido está vacío.</Typography>
-                    </Stack>
+                    <Carrito />
                 </Box>
             </Box>
         </>

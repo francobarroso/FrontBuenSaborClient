@@ -1,13 +1,13 @@
-import { Box, Grid, MenuItem, Select, Stack, Typography } from "@mui/material";
+import { Box, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Sucursal from "../types/Sucursal";
 import { SucursalGetByEmpresaId } from "../services/SucursalService";
 import HomeIcon from '@mui/icons-material/Home';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
-import SearchIcon from '@mui/icons-material/Search';
 import Promocion from "../types/Promocion";
 import { PromocionFindByEcommerce } from "../services/PromocionService";
 import PromocionCard from "../components/iu/Promocion/PromocionCard";
+import Carrito from "../components/iu/Carrito/Carrito";
 
 const Promociones = () => {
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -53,7 +53,7 @@ const Promociones = () => {
                 {
                     sucursalNombre !== "" && sucursalHorario !== "" ? (
                         <>
-                            <Typography variant="h5" sx={{color: "#415a81"}} display="flex" alignItems="center" gutterBottom>
+                            <Typography variant="h5" sx={{ color: "#415a81" }} display="flex" alignItems="center" gutterBottom>
                                 <HomeIcon style={{ marginRight: '8px' }} /> {sucursalNombre}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
@@ -64,7 +64,7 @@ const Promociones = () => {
                         sucursales.filter(sucursal => sucursal.esCasaMatriz)
                             .map((sucursal) => (
                                 <Box key={sucursal.id} mb={2}>
-                                    <Typography variant="h5" sx={{color: "#415a81"}} display="flex" alignItems="center" gutterBottom>
+                                    <Typography variant="h5" sx={{ color: "#415a81" }} display="flex" alignItems="center" gutterBottom>
                                         <HomeIcon style={{ marginRight: '8px' }} /> {sucursal.nombre}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
@@ -100,11 +100,7 @@ const Promociones = () => {
                     </Grid>
                 </Box>
                 <Box padding={2} ml={2} flexBasis="25%" flexGrow={0} sx={{ border: "1px solid #c5c5c5", borderRadius: "20px" }}>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Mi pedido</Typography>
-                    <Stack direction="column" alignItems="center">
-                        <SearchIcon sx={{ color: "#b6bfbe", fontSize: 100 }} />
-                        <Typography variant="body2">Tu pedido está vacío.</Typography>
-                    </Stack>
+                    <Carrito />
                 </Box>
             </Box>
         </>

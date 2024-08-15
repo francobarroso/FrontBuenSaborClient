@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { Card, CardActions, CardMedia, CardContent, Typography, Grid, Box, IconButton } from "@mui/material";
+import { Card, CardMedia, CardContent, Typography, Grid, Box } from "@mui/material";
 import ArticuloInsumo from '../../../types/ArticuloInsumo';
 import ArticuloManufacturado from '../../../types/ArticuloManufacturado';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ProductoView from './ProductoView';
+import { useCarrito } from '../../../hooks/useCarrito';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 interface ProductosProps {
     articulo: ArticuloInsumo | ArticuloManufacturado;
@@ -12,6 +16,13 @@ interface ProductosProps {
 const ProductoCard: React.FC<ProductosProps> = ({ articulo }) => {
     const [open, setOpen] = useState(false);
     const [images, setImages] = useState<string[]>([]);
+    const { carrito, addCarrito, removeCarrito, removeItemCarrito } = useCarrito();
+
+    const verificarArticuloCarrito = (product: ArticuloManufacturado | ArticuloInsumo) => {
+        return carrito.some(item => String(item.articulo.id) === String(product.id));
+    };
+
+    const isArticuloCarrito = verificarArticuloCarrito(articulo);
 
     const esArticuloManufacturado = (articulo: ArticuloInsumo | ArticuloManufacturado): articulo is ArticuloManufacturado => {
         return 'descripcion' in articulo;
@@ -20,11 +31,11 @@ const ProductoCard: React.FC<ProductosProps> = ({ articulo }) => {
     const handleOpen = () => {
         setImages(articulo.imagenes.map(imagen => imagen.url));
         setOpen(true);
-    } 
+    };
 
     const handleClose = () => {
         setOpen(false);
-    } 
+    };
 
     return (
         <Card
@@ -69,34 +80,35 @@ const ProductoCard: React.FC<ProductosProps> = ({ articulo }) => {
                             alt={articulo.denominacion}
                             style={{ objectFit: 'cover' }}
                         />
-                        <IconButton
-                            style={{
-                                position: 'absolute',
-                                top: '8px',
-                                right: '8px',
-                                backgroundColor: 'white',
-                                padding: '4px',
-                                borderRadius: '50%',
-                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-                            }}
-                        >
-                            <AddCircleOutlineIcon style={{ color: '#1976d2' }} />
-                        </IconButton>
                     </Grid>
                 </Grid>
-                <Box style={{ padding: '16px' }}>
+                <Box style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="h6" style={{ fontWeight: 'bold' }}>
                         ${articulo.precioVenta && articulo.precioVenta.toFixed(2)}
                     </Typography>
+                    <Box>
+                        {
+                            !isArticuloCarrito ? (
+                                <Box>
+                                    <RemoveIcon sx={{ color: "grey" }} /> 
+                                    <AddShoppingCartIcon sx={{ cursor: "pointer", color:"green" }} onClick={() => addCarrito(articulo)} /> 
+                                    <AddIcon sx={{ cursor: "pointer" }} onClick={() => addCarrito(articulo)} />
+                                </Box>
+                            ) : (
+                                <Box>
+                                    <RemoveIcon sx={{ cursor: "pointer" }} onClick={() => removeItemCarrito(articulo)} /> 
+                                    <RemoveShoppingCartIcon sx={{ cursor: "pointer", color: "red" }} onClick={() => removeCarrito(articulo)} /> 
+                                    <AddIcon sx={{ cursor: "pointer" }} onClick={() => addCarrito(articulo)} />
+                                </Box>
+                            )
+                        }
+                    </Box>
                 </Box>
             </CardContent>
-            <CardActions style={{ justifyContent: 'space-between', padding: '0 16px 16px 16px' }}>
-                {/* Aquí puedes agregar más botones o acciones si es necesario */}
-            </CardActions>
 
-            <ProductoView articulo={articulo} open={open} onClose={handleClose} images={images}/>
+            <ProductoView articulo={articulo} open={open} onClose={handleClose} images={images} />
         </Card>
     );
-}
+};
 
 export default ProductoCard;
