@@ -4,6 +4,7 @@ import VistaCiudadano from "../screens/VistaCiudadano";
 import Sucursales from "../screens/Sucursales";
 import Promociones from "../screens/Promociones";
 import Menu from "../screens/Menu";
+import Pedido from "../screens/Pedido";
 
 export const AppRoutes: React.FC = () => {
     return (
@@ -13,6 +14,7 @@ export const AppRoutes: React.FC = () => {
                 <Route path="/sucursales" element={<Sucursales />} />
                 <Route path="/menu" element={<Menu />} />
                 <Route path="/promociones" element={<Promociones />} />
+                <Route path="/pedido" element={<Pedido />}/>
             </Route>
         </Routes>
     );

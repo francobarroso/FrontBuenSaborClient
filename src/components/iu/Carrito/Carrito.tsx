@@ -3,11 +3,16 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useCarrito } from "../../../hooks/useCarrito";
 import { ItemCarrito } from "./ItemCarrito";
 import colorConfigs from "../../../configs/colorConfig";
+import { useNavigate } from "react-router-dom";
 
 const Carrito = () => {
     const { carrito, totalPedido } = useCarrito();
-
+    const navigate = useNavigate();
     const isCarritoEmpty = carrito.length === 0;
+
+    const handlePedido = () => {
+        navigate("/pedido");
+    }
 
     return (
         <>
@@ -38,16 +43,20 @@ const Carrito = () => {
                         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Total:</Typography>
                         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>${totalPedido}</Typography>
                     </Stack>
-
-                    <Button
-                        variant="contained"
-                        fullWidth
-                        sx={{
-                            py: 1.5, fontWeight: 'bold', ...colorConfigs.buttonStyles
-                        }}
-                    >
-                        Finalizar Pedido
-                    </Button>
+                    {
+                        !location.pathname.includes('pedido') && (
+                            <Button
+                                variant="contained"
+                                fullWidth
+                                sx={{
+                                    py: 1.5, fontWeight: 'bold', ...colorConfigs.buttonStyles
+                                }}
+                                onClick={handlePedido}
+                            >
+                                Completar Pedido
+                            </Button>
+                        )
+                    }
                 </>
             )}
         </>

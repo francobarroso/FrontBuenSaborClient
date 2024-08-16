@@ -28,6 +28,7 @@ const VistaCiudadano = () => {
         getAllSucursal();
         getAllCategorias();
         localStorage.removeItem('categoria');
+        localStorage.removeItem('sucursal');
     }, []);
 
     const handleClick = (denominacion: string) => {

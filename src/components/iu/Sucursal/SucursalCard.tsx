@@ -12,16 +12,14 @@ const SucursalCard: React.FC<SucursalCardProps> = ({ sucursal }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        localStorage.setItem('sucursalNombre', sucursal.nombre);
-        localStorage.setItem('sucursalHorario', `${sucursal.horarioApertura} - ${sucursal.horarioCierre}`);
+        localStorage.setItem("sucursal", JSON.stringify(sucursal));
         navigate('/menu');
         window.scrollTo(0, 0);
     };
 
     useEffect(()=>{
-        localStorage.removeItem('sucursalNombre');
-        localStorage.removeItem('sucursalHorario');
-    })
+        localStorage.removeItem('sucursal');
+    });
 
     return (
         <Card

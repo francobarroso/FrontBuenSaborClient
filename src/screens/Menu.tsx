@@ -22,12 +22,12 @@ const Menu = () => {
     const [manufacturados, setManufacturado] = useState<ArticuloManufacturado[]>([]);
     const [currentCategoria, setCurrentCategoria] = useState("Todas");
     const [priceOrder, setPriceOrder] = useState("asc");
-    const [sucursalNombre, setCurrentSucursalNombre] = useState("");
-    const [sucursalHorario, setCurrentSucursalHorario] = useState("");
+    const [sucursal, setSucursal] = useState<Sucursal | null>(null);
 
     const getAllSucursal = async () => {
         const sucursales: Sucursal[] = await SucursalGetByEmpresaId(1);
         setSucursales(sucursales);
+        return sucursales;
     };
 
     const getAllCategorias = async () => {
@@ -61,42 +61,49 @@ const Menu = () => {
     };
 
     useEffect(() => {
-        getAllCategorias();
-        getAllInsumos();
-        getAllManufacturados();
-        getAllSucursal();
-        const categoria = localStorage.getItem('categoria');
-        if (categoria) {
-            setCurrentCategoria(categoria);
+        const fetchData = async () => {
+            getAllCategorias();
+            getAllInsumos();
+            getAllManufacturados();
+            const sucursales = await getAllSucursal();
+            let categoria = localStorage.getItem('categoria');
+            if (categoria) {
+                setCurrentCategoria(categoria);
+            }
+
+            let sucursal = localStorage.getItem("sucursal");
+            if (sucursal) {
+                setSucursal(JSON.parse(sucursal));
+                console.log("entre");
+            } else {
+                let sucursalMatriz = sucursales.find(sucursal => sucursal.esCasaMatriz);
+                console.log(sucursalMatriz);
+                localStorage.setItem("sucursalMatriz", JSON.stringify(sucursalMatriz));
+            }
         }
 
-        const sucursalNombre = localStorage.getItem('sucursalNombre');
-        const sucursalHorario = localStorage.getItem('sucursalHorario');
-        if (sucursalNombre && sucursalHorario) {
-            setCurrentSucursalNombre(sucursalNombre);
-            setCurrentSucursalHorario(sucursalHorario);
-        }
+        fetchData();
     }, []);
 
     return (
         <>
             <Box mt={3} ml={3} borderRadius={2} bgcolor="#f5f5f5" boxShadow={2}>
                 {
-                    sucursalNombre !== "" && sucursalHorario !== "" ? (
+                    sucursal !== null ? (
                         <>
-                            <Typography variant="h5" sx={{...colorConfigs.textStyles}} display="flex" alignItems="center" gutterBottom>
-                                <HomeIcon style={{ marginRight: '8px' }} /> {sucursalNombre}
-                                </Typography>
+                            <Typography variant="h5" sx={{ ...colorConfigs.textStyles }} display="flex" alignItems="center" gutterBottom>
+                                <HomeIcon style={{ marginRight: '8px' }} />{sucursal?.nombre}
+                            </Typography>
                             <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
-                                <QueryBuilderIcon style={{ marginRight: '8px' }} /> {sucursalHorario}
-                                </Typography>
+                                <QueryBuilderIcon style={{ marginRight: '8px' }} /> {sucursal.horarioApertura} - {sucursal.horarioCierre}
+                            </Typography>
                         </>
                     ) :
                         sucursales.filter(sucursal => sucursal.esCasaMatriz)
                             .map((sucursal) => (
                                 <Box key={sucursal.id} mb={2}>
-                                    <Typography variant="h5" sx={{...colorConfigs.textStyles}} display="flex" alignItems="center" gutterBottom>
-                                        <HomeIcon style={{ marginRight: '8px' }} /> {sucursal.nombre}
+                                    <Typography variant="h5" sx={{ ...colorConfigs.textStyles }} display="flex" alignItems="center" gutterBottom>
+                                        <HomeIcon style={{ marginRight: '8px' }} />{sucursal.nombre}
                                     </Typography>
                                     <Typography variant="body2" color="textSecondary" display="flex" alignItems="center">
                                         <QueryBuilderIcon style={{ marginRight: '8px' }} /> {sucursal.horarioApertura} - {sucursal.horarioCierre}

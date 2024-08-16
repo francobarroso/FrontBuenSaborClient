@@ -17,13 +17,15 @@ import avatarImage from "../../assets/images/logo.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import RegisterButton from "./RegisterButton";
+import { useNavigate } from "react-router-dom";
 
 const Topbar = () => {
   const { isAuthenticated } = useAuth0();
+  const navigate = useNavigate();
 
   const handleMenu = () => {
     localStorage.removeItem('categoria');
-    window.location.href = '/menu'
+    navigate("/menu");
   }
 
   return (
@@ -52,7 +54,7 @@ const Topbar = () => {
           <Avatar
             src={avatarImage}
             sx={{ width: 50, height: 50, cursor: "pointer" }}
-            onClick={() => window.location.href = '/'}
+            onClick={() => navigate("/")}
           />
           <Typography
             variant="h5"
@@ -65,7 +67,7 @@ const Topbar = () => {
               fontFamily: "Courier",
               cursor: "pointer",
             }}
-            onClick={() => window.location.href = '/'}
+            onClick={() => navigate("/")}
           >
             El Buen Sabor
           </Typography>
@@ -96,7 +98,7 @@ const Topbar = () => {
           <Divider orientation="vertical" flexItem sx={{ bgcolor: "#EEEEEE" }} />
 
           <IconButton
-            onClick={() => window.location.href = '/promociones'}
+            onClick={() => navigate("/promociones")}
             sx={{
               color: "#EEEEEE",
               "&:hover": { color: "#5f7faf", backgroundColor: "#233044" },
