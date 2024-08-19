@@ -9,7 +9,7 @@ const RegisterButton = () => {
             onClick={() => {
                 loginWithRedirect({
                     appState: {
-                        returnTo: window.location.pathname
+                        returnTo: '/registro'
                     },
                     authorizationParams: {
                         screen_hint: "signup"

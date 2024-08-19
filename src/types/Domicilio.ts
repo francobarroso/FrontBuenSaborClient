@@ -7,5 +7,5 @@ export default interface Domicilio extends Base{
     cp: number | null,
     piso: number | null,
     nroDpto: number | null,
-    localidad: Localidad | null
+    localidad: Localidad
 }
