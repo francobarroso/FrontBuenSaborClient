@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormControlLabel, Radio, RadioGroup, Typography } from "@mui/material";
+import { Box, Button, FormControl, FormControlLabel, FormHelperText, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Typography } from "@mui/material";
 import Carrito from "../components/iu/Carrito/Carrito";
 import colorConfigs from "../configs/colorConfig";
 import { useEffect, useState } from "react";
@@ -9,15 +9,16 @@ import DetallePedido from "../types/DetallePedido";
 import { FormaPago } from "../types/enums/FormaPago";
 import { Estado } from "../types/enums/Estado";
 import PedidoEnviadoModal from "../components/iu/Pedido/PedidoEnviadoModal";
-import { useNavigate } from "react-router-dom";
 import PreferenceMP from "../types/PreferenceMP";
 import { createPreferenceMP, PedidoSave } from "../services/Pedido";
 import CheckoutMP from "../components/iu/Carrito/CheckoutMP";
 import { useCarrito } from "../hooks/useCarrito";
 import { toast } from "react-toastify";
+import Cliente from "../types/Cliente";
+import { ClienteGetByEmail } from "../services/ClienteService";
+import { useAuth0 } from "@auth0/auth0-react";
 
-const emptyPedido = { id: null, eliminado: false, total: 0, estado: null, tipoEnvio: null, formaPago: null, domicilio: null, sucursal: undefined, clienteId: 1, detallePedidos: undefined, empleadoId: 1 }
-const pedidoprub = { id: 0, eliminado: false, total: 0, estado: Estado.PREPARACION, tipoEnvio: TipoEnvio.DELIVERY, formaPago: FormaPago.MERCADO_PAGO, domicilio: null, sucursal: undefined, clienteId: 1, detallePedidos: undefined, empleadoId: 1 }
+const emptyPedido = { id: null, eliminado: false, total: 0, estado: null, tipoEnvio: null, formaPago: null, domicilio: null, sucursal: undefined, cliente: undefined, detallePedidos: undefined, empleado: undefined }
 
 const Pedido = () => {
     const [sucursal, setSucursal] = useState<Sucursal | null>(null);
@@ -26,18 +27,25 @@ const Pedido = () => {
     const [open, setOpen] = useState(false);
     const { totalPedido } = useCarrito();
     const [idPreference, setIdPreference] = useState<string>('');
-    const navigate = useNavigate();
+    const [cliente, setCliente] = useState<Cliente>();
+    const { user } = useAuth0();
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const SavePedido = async (pedido: Pedido) => {
         return PedidoSave(pedido);
     }
 
-    const MercadoPago = async () => {
-        const response: PreferenceMP = await createPreferenceMP(pedidoprub);
+    const MercadoPago = async (pedido: Pedido) => {
+        const response: PreferenceMP = await createPreferenceMP(pedido);
         if (response) {
             setIdPreference(response.id);
         }
     };
+
+    const getCliente = async (email: string) => {
+        const cliente: Cliente = await ClienteGetByEmail(email);
+        setCliente(cliente);
+    }
 
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedTipoEnvio = (event.target as HTMLInputElement).value as TipoEnvio;
@@ -47,9 +55,38 @@ const Pedido = () => {
         }));
     };
 
+    const handleDomicilioChange = (e: SelectChangeEvent<number>) => {
+        const domicilioId = e.target.value as number;
+        const domicilio = cliente?.domicilios.find(d => d.id === domicilioId);
+        if (domicilio) {
+            setPedido(prevPedido => ({
+                ...prevPedido,
+                domicilio: domicilio,
+            }));
+        }
+
+        if (errors.domicilio) {
+            setErrors(prev => ({
+                ...prev,
+                domicilio: ''
+            }));
+        }
+    }
+
+    const validate = (): boolean => {
+        const newErrors: { [key: string]: string } = {};
+        if (!pedido.domicilio) {
+            newErrors.domicilio = 'Escoja un domicilio';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleClose = () => {
+        localStorage.removeItem("carrito");
         setOpen(false);
-        navigate("/");
+        window.location.href = "/";
     }
 
     const handleSubmit = async () => {
@@ -59,12 +96,18 @@ const Pedido = () => {
             formaPago: pedido.tipoEnvio === TipoEnvio.DELIVERY ? FormaPago.MERCADO_PAGO : FormaPago.EFECTIVO,
             detallePedidos: carrito,
             total: totalPedido,
-            sucursal: sucursal || pedido.sucursal
+            sucursal: sucursal || pedido.sucursal,
+            cliente: cliente,
+            domicilio: pedido.domicilio || cliente?.domicilios?.[0] || null
         };
 
-        try{
+        if(updatedPedido.formaPago === FormaPago.MERCADO_PAGO && !validate()){
+            return;
+        }
+
+        try {
             const data = await SavePedido(updatedPedido);
-            if(data.status !== 200){
+            if (data.status !== 200) {
                 toast.error("Error al realizar el pedido, intente más tarde.", {
                     position: "top-right",
                     autoClose: 5000,
@@ -76,12 +119,12 @@ const Pedido = () => {
                     theme: "colored"
                 });
                 return;
-            } else if(data.data.formaPago === FormaPago.MERCADO_PAGO){
-                MercadoPago();
-            } else{
+            } else if (data.data.formaPago === FormaPago.MERCADO_PAGO) {
+                MercadoPago(updatedPedido);
+            } else {
                 setOpen(true);
             }
-        }catch (error) {
+        } catch (error) {
             console.log("Error al dar de baja un articulo insumo");
         }
 
@@ -102,7 +145,11 @@ const Pedido = () => {
         if (carrito) {
             setCarrito(JSON.parse(carrito));
         }
-    }, []);
+
+        if (user?.name) {
+            getCliente(user.name);
+        }
+    }, [user]);
 
     return (
         <>
@@ -119,7 +166,23 @@ const Pedido = () => {
                                 <FormControlLabel value={TipoEnvio.DELIVERY} control={<Radio />} label={<Typography sx={{ fontWeight: 'bold' }}>
                                     Envio a domicilio (Solo MecadoPago)
                                 </Typography>} />
-                                <Typography mb={3} variant="body2">Domicilio Cliente</Typography>
+                                <FormControl fullWidth error={!!errors.domicilio}>
+                                    <Select
+                                        fullWidth
+                                        value={pedido.domicilio?.id || ''}
+                                        onChange={handleDomicilioChange}
+                                        displayEmpty
+                                        disabled={pedido.tipoEnvio !== TipoEnvio.DELIVERY}
+                                    >
+                                        <MenuItem value="" disabled>Seleccione su Domicilio</MenuItem>
+                                        {cliente?.domicilios.map(domicilio => (
+                                            <MenuItem key={domicilio.id} value={domicilio.id}>
+                                                {domicilio.calle}, {domicilio.numero}, {domicilio.localidad.nombre}, {domicilio.localidad.provincia.nombre}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    {errors.domicilio && <FormHelperText>{errors.domicilio}</FormHelperText>}
+                                </FormControl>
                                 <FormControlLabel value={TipoEnvio.TAKE_AWAY} control={<Radio />} label={<Typography sx={{ fontWeight: 'bold' }}>
                                     Retiro en Local (Solo Efectivo)
                                 </Typography>} />

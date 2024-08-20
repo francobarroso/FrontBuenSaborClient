@@ -1,5 +1,7 @@
+import Cliente from "./Cliente";
 import DetallePedido from "./DetallePedido";
 import Domicilio from "./Domicilio";
+import Empleado from "./Empleado";
 import { Estado } from "./enums/Estado";
 import { FormaPago } from "./enums/FormaPago";
 import { TipoEnvio } from "./enums/TipoEnvio";
@@ -14,7 +16,7 @@ export default interface Pedido{
     formaPago: FormaPago | null;
     domicilio: Domicilio | null;
     sucursal: Sucursal | undefined;
-    clienteId: number;
+    cliente: Cliente | undefined;
     detallePedidos: DetallePedido[] | undefined;
-    empleadoId: number;
+    empleado: Empleado | undefined;
 }
