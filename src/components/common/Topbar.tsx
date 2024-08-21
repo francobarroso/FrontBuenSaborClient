@@ -54,7 +54,7 @@ const Topbar = () => {
           <Avatar
             src={avatarImage}
             sx={{ width: 50, height: 50, cursor: "pointer" }}
-            onClick={() => navigate("/")}
+            onClick={() =>  window.location.href = "/"}
           />
           <Typography
             variant="h5"
@@ -67,7 +67,7 @@ const Topbar = () => {
               fontFamily: "Courier",
               cursor: "pointer",
             }}
-            onClick={() => navigate("/")}
+            onClick={() => window.location.href = "/"}
           >
             El Buen Sabor
           </Typography>

@@ -1,4 +1,4 @@
-import { Box, Grid, IconButton, ListItemButton, ListItemText, MenuItem, Select, Typography } from "@mui/material";
+import { Alert, Box, Grid, IconButton, ListItemButton, ListItemText, MenuItem, Select, Typography } from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useEffect, useState } from "react";
 import CategoriaGetDto from "../types/CategoriaGetDto";
@@ -14,6 +14,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import Carrito from "../components/iu/Carrito/Carrito";
 import colorConfigs from "../configs/colorConfig";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Menu = () => {
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -23,6 +24,7 @@ const Menu = () => {
     const [currentCategoria, setCurrentCategoria] = useState("Todas");
     const [priceOrder, setPriceOrder] = useState("asc");
     const [sucursal, setSucursal] = useState<Sucursal | null>(null);
+    const { isAuthenticated } = useAuth0();
 
     const getAllSucursal = async () => {
         const sucursales: Sucursal[] = await SucursalGetByEmpresaId(1);
@@ -171,6 +173,13 @@ const Menu = () => {
                 </Box>
                 <Box padding={2} ml={2} flexBasis="25%" flexGrow={0} sx={{ border: "1px solid #c5c5c5", borderRadius: "20px" }}>
                     <Carrito />
+                    {!isAuthenticated && (
+                        <Box mt={2}>
+                            <Alert variant="outlined" severity="info">
+                                Para realizar pedidos debe tener<br />una cuenta en el sistema.
+                            </Alert>
+                        </Box>
+                    )}
                 </Box>
             </Box>
         </>

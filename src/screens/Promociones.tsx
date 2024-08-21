@@ -1,4 +1,4 @@
-import { Box, Grid, MenuItem, Select, Typography } from "@mui/material";
+import { Alert, Box, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Sucursal from "../types/Sucursal";
 import { SucursalGetByEmpresaId } from "../services/SucursalService";
@@ -9,6 +9,7 @@ import { PromocionFindByEcommerce } from "../services/PromocionService";
 import PromocionCard from "../components/iu/Promocion/PromocionCard";
 import Carrito from "../components/iu/Carrito/Carrito";
 import colorConfigs from "../configs/colorConfig";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Promociones = () => {
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -16,6 +17,7 @@ const Promociones = () => {
     const [sucursalNombre, setCurrentSucursalNombre] = useState("");
     const [sucursalHorario, setCurrentSucursalHorario] = useState("");
     const [priceOrder, setPriceOrder] = useState("asc");
+    const { isAuthenticated } = useAuth0();
 
     const getAllSucursal = async () => {
         const sucursales: Sucursal[] = await SucursalGetByEmpresaId(1);
@@ -102,6 +104,13 @@ const Promociones = () => {
                 </Box>
                 <Box padding={2} ml={2} flexBasis="25%" flexGrow={0} sx={{ border: "1px solid #c5c5c5", borderRadius: "20px" }}>
                     <Carrito />
+                    {!isAuthenticated && (
+                        <Box mt={2}>
+                            <Alert variant="outlined" severity="info">
+                                Para realizar pedidos debe tener<br />una cuenta en el sistema.
+                            </Alert>
+                        </Box>
+                    )}
                 </Box>
             </Box>
         </>

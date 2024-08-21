@@ -8,6 +8,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface ProductosProps {
     articulo: ArticuloInsumo | ArticuloManufacturado;
@@ -17,6 +18,7 @@ const ProductoCard: React.FC<ProductosProps> = ({ articulo }) => {
     const [open, setOpen] = useState(false);
     const [images, setImages] = useState<string[]>([]);
     const { carrito, addCarrito, removeCarrito, removeItemCarrito } = useCarrito();
+    const { isAuthenticated } = useAuth0();
 
     const verificarArticuloCarrito = (product: ArticuloManufacturado | ArticuloInsumo) => {
         return carrito.some(item => String(item.articulo && item.articulo.id) === String(product.id));
@@ -86,23 +88,25 @@ const ProductoCard: React.FC<ProductosProps> = ({ articulo }) => {
                     <Typography variant="h6" style={{ fontWeight: 'bold' }}>
                         ${articulo.precioVenta && articulo.precioVenta.toFixed(2)}
                     </Typography>
-                    <Box>
-                        {
-                            !isArticuloCarrito ? (
-                                <Box>
-                                    <RemoveIcon sx={{ color: "grey" }} /> 
-                                    <AddShoppingCartIcon sx={{ cursor: "pointer", color:"green" }} onClick={() => addCarrito(articulo)} /> 
-                                    <AddIcon sx={{ cursor: "pointer" }} onClick={() => addCarrito(articulo)} />
-                                </Box>
-                            ) : (
-                                <Box>
-                                    <RemoveIcon sx={{ cursor: "pointer" }} onClick={() => removeItemCarrito(articulo)} /> 
-                                    <RemoveShoppingCartIcon sx={{ cursor: "pointer", color: "red" }} onClick={() => removeCarrito(articulo)} /> 
-                                    <AddIcon sx={{ cursor: "pointer" }} onClick={() => addCarrito(articulo)} />
-                                </Box>
-                            )
-                        }
-                    </Box>
+                    {isAuthenticated && (
+                        <Box>
+                            {
+                                !isArticuloCarrito ? (
+                                    <Box>
+                                        <RemoveIcon sx={{ color: "grey" }} />
+                                        <AddShoppingCartIcon sx={{ cursor: "pointer", color: "green" }} onClick={() => addCarrito(articulo)} />
+                                        <AddIcon sx={{ cursor: "pointer" }} onClick={() => addCarrito(articulo)} />
+                                    </Box>
+                                ) : (
+                                    <Box>
+                                        <RemoveIcon sx={{ cursor: "pointer" }} onClick={() => removeItemCarrito(articulo)} />
+                                        <RemoveShoppingCartIcon sx={{ cursor: "pointer", color: "red" }} onClick={() => removeCarrito(articulo)} />
+                                        <AddIcon sx={{ cursor: "pointer" }} onClick={() => addCarrito(articulo)} />
+                                    </Box>
+                                )
+                            }
+                        </Box>
+                    )}
                 </Box>
             </CardContent>
 

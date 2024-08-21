@@ -1,6 +1,5 @@
-import { Box, Card, CardContent, CardMedia, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 import Promocion from "../../../types/Promocion";
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import PromocionView from "./PromocionView";
 import { useState } from "react";
 import { useCarrito } from "../../../hooks/useCarrito";
@@ -8,6 +7,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface PromocionProps {
     promocion: Promocion;
@@ -17,6 +17,7 @@ const PromocionCard: React.FC<PromocionProps> = ({ promocion }) => {
     const [open, setOpen] = useState(false);
     const [images, setImages] = useState<string[]>([]);
     const { carrito, addPromocionCarrito, removeCarrito, removeItemCarrito } = useCarrito();
+    const { isAuthenticated } = useAuth0();
 
     const verificarPromocionCarrito = (promocion: Promocion) => {
         return carrito.some(item => String(item.promocion && item.promocion.id) === String(promocion.id));
@@ -87,42 +88,31 @@ const PromocionCard: React.FC<PromocionProps> = ({ promocion }) => {
                                 alt={promocion.denominacion}
                                 style={{ objectFit: 'cover' }}
                             />
-                            <IconButton
-                                style={{
-                                    position: 'absolute',
-                                    top: '8px',
-                                    right: '8px',
-                                    backgroundColor: 'white',
-                                    padding: '4px',
-                                    borderRadius: '50%',
-                                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-                                }}
-                            >
-                                <AddCircleOutlineIcon style={{ color: '#1976d2' }} />
-                            </IconButton>
                         </Grid>
                     </Grid>
                     <Box style={{ padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="h6" style={{ fontWeight: 'bold' }}>
                             ${promocion.precioPromocional && promocion.precioPromocional.toFixed(2)}
                         </Typography>
-                        <Box>
-                            {
-                                !isPromocionCarrito ? (
-                                    <Box>
-                                        <RemoveIcon sx={{ color: "grey" }} />
-                                        <AddShoppingCartIcon sx={{ cursor: "pointer", color: "green" }} onClick={() => addPromocionCarrito(promocion)} />
-                                        <AddIcon sx={{ cursor: "pointer" }} onClick={() => addPromocionCarrito(promocion)} />
-                                    </Box>
-                                ) : (
-                                    <Box>
-                                        <RemoveIcon sx={{ cursor: "pointer" }} onClick={() => removeItemCarrito(promocion)} />
-                                        <RemoveShoppingCartIcon sx={{ cursor: "pointer", color: "red" }} onClick={() => removeCarrito(promocion)} />
-                                        <AddIcon sx={{ cursor: "pointer" }} onClick={() => addPromocionCarrito(promocion)} />
-                                    </Box>
-                                )
-                            }
-                        </Box>
+                        {isAuthenticated && (
+                            <Box>
+                                {
+                                    !isPromocionCarrito ? (
+                                        <Box>
+                                            <RemoveIcon sx={{ color: "grey" }} />
+                                            <AddShoppingCartIcon sx={{ cursor: "pointer", color: "green" }} onClick={() => addPromocionCarrito(promocion)} />
+                                            <AddIcon sx={{ cursor: "pointer" }} onClick={() => addPromocionCarrito(promocion)} />
+                                        </Box>
+                                    ) : (
+                                        <Box>
+                                            <RemoveIcon sx={{ cursor: "pointer" }} onClick={() => removeItemCarrito(promocion)} />
+                                            <RemoveShoppingCartIcon sx={{ cursor: "pointer", color: "red" }} onClick={() => removeCarrito(promocion)} />
+                                            <AddIcon sx={{ cursor: "pointer" }} onClick={() => addPromocionCarrito(promocion)} />
+                                        </Box>
+                                    )
+                                }
+                            </Box>
+                        )}
                     </Box>
                 </CardContent>
                 <PromocionView promocion={promocion} open={open} onClose={handleClose} images={images} />
