@@ -11,9 +11,10 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 interface PromocionProps {
     promocion: Promocion;
+    cliente: boolean | null;
 }
 
-const PromocionCard: React.FC<PromocionProps> = ({ promocion }) => {
+const PromocionCard: React.FC<PromocionProps> = ({ promocion, cliente }) => {
     const [open, setOpen] = useState(false);
     const [images, setImages] = useState<string[]>([]);
     const { carrito, addPromocionCarrito, removeCarrito, removeItemCarrito } = useCarrito();
@@ -94,7 +95,7 @@ const PromocionCard: React.FC<PromocionProps> = ({ promocion }) => {
                         <Typography variant="h6" style={{ fontWeight: 'bold' }}>
                             ${promocion.precioPromocional && promocion.precioPromocional.toFixed(2)}
                         </Typography>
-                        {isAuthenticated && (
+                        {isAuthenticated && cliente && (
                             <Box>
                                 {
                                     !isPromocionCarrito ? (

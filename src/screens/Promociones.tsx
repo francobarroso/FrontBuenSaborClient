@@ -108,7 +108,7 @@ const Promociones = () => {
                         {sortItemsByPrice(promociones)
                             .map((promocion) => (
                                 <Grid item xs={12} sm={6} key={promocion.id}>
-                                    <PromocionCard promocion={promocion} />
+                                    <PromocionCard promocion={promocion} cliente={cliente}/>
                                 </Grid>
                             ))}
                     </Grid>

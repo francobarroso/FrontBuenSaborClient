@@ -168,14 +168,14 @@ const Menu = () => {
                             .filter(manufacturado => currentCategoria === "Todas" || manufacturado.categoria.denominacion === currentCategoria))
                             .map((manufacturado) => (
                                 <Grid item xs={12} sm={6} key={manufacturado.id}>
-                                    <ProductoCard articulo={manufacturado} />
+                                    <ProductoCard articulo={manufacturado} cliente={cliente}/>
                                 </Grid>
                             ))}
                         {sortItemsByPrice(insumos
                             .filter(insumo => currentCategoria === "Todas" || insumo.categoria.denominacion === currentCategoria))
                             .map((insumo) => (
                                 <Grid item xs={12} sm={6} key={insumo.id}>
-                                    <ProductoCard articulo={insumo} />
+                                    <ProductoCard articulo={insumo} cliente={cliente}/>
                                 </Grid>
                             ))}
                     </Grid>

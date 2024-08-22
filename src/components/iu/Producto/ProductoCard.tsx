@@ -12,9 +12,10 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 interface ProductosProps {
     articulo: ArticuloInsumo | ArticuloManufacturado;
+    cliente: boolean | null;
 }
 
-const ProductoCard: React.FC<ProductosProps> = ({ articulo }) => {
+const ProductoCard: React.FC<ProductosProps> = ({ articulo, cliente }) => {
     const [open, setOpen] = useState(false);
     const [images, setImages] = useState<string[]>([]);
     const { carrito, addCarrito, removeCarrito, removeItemCarrito } = useCarrito();
@@ -88,7 +89,7 @@ const ProductoCard: React.FC<ProductosProps> = ({ articulo }) => {
                     <Typography variant="h6" style={{ fontWeight: 'bold' }}>
                         ${articulo.precioVenta && articulo.precioVenta.toFixed(2)}
                     </Typography>
-                    {isAuthenticated && (
+                    {isAuthenticated && cliente && (
                         <Box>
                             {
                                 !isArticuloCarrito ? (
