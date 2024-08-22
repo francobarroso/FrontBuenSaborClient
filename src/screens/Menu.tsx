@@ -1,4 +1,4 @@
-import { Alert, Box, Grid, IconButton, ListItemButton, ListItemText, MenuItem, Select, Typography } from "@mui/material";
+import { Alert, Box, Grid, IconButton, Link, ListItemButton, ListItemText, MenuItem, Select, Typography } from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useEffect, useState } from "react";
 import CategoriaGetDto from "../types/CategoriaGetDto";
@@ -15,6 +15,7 @@ import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import Carrito from "../components/iu/Carrito/Carrito";
 import colorConfigs from "../configs/colorConfig";
 import { useAuth0 } from "@auth0/auth0-react";
+import { ClienteExist } from "../services/ClienteService";
 
 const Menu = () => {
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -24,7 +25,8 @@ const Menu = () => {
     const [currentCategoria, setCurrentCategoria] = useState("Todas");
     const [priceOrder, setPriceOrder] = useState("asc");
     const [sucursal, setSucursal] = useState<Sucursal | null>(null);
-    const { isAuthenticated } = useAuth0();
+    const [cliente, setCliente] = useState<boolean | null>(null);
+    const { isAuthenticated, user } = useAuth0();
 
     const getAllSucursal = async () => {
         const sucursales: Sucursal[] = await SucursalGetByEmpresaId(1);
@@ -47,6 +49,11 @@ const Menu = () => {
         setManufacturado(manufacturados);
     };
 
+    const getCliente = async (email: string) => {
+        const cliente: boolean = await ClienteExist(email);
+        setCliente(cliente);
+    }
+
     const setCategoria = (denominacion: string) => {
         localStorage.setItem('categoria', denominacion);
         setCurrentCategoria(denominacion);
@@ -63,6 +70,10 @@ const Menu = () => {
     };
 
     useEffect(() => {
+        if (isAuthenticated && user?.name) {
+            getCliente(user.name);
+        }
+
         const fetchData = async () => {
             getAllCategorias();
             getAllInsumos();
@@ -76,10 +87,8 @@ const Menu = () => {
             let sucursal = localStorage.getItem("sucursal");
             if (sucursal) {
                 setSucursal(JSON.parse(sucursal));
-                console.log("entre");
             } else {
                 let sucursalMatriz = sucursales.find(sucursal => sucursal.esCasaMatriz);
-                console.log(sucursalMatriz);
                 localStorage.setItem("sucursalMatriz", JSON.stringify(sucursalMatriz));
             }
         }
@@ -177,6 +186,13 @@ const Menu = () => {
                         <Box mt={2}>
                             <Alert variant="outlined" severity="info">
                                 Para realizar pedidos debe tener<br />una cuenta en el sistema.
+                            </Alert>
+                        </Box>
+                    )}
+                    {isAuthenticated && !cliente && (
+                        <Box mt={2}>
+                            <Alert variant="outlined" severity="warning">
+                                Para realizar pedidos termine de<br />completar su <Link href="/registro" underline="hover">registro</Link>.
                             </Alert>
                         </Box>
                     )}

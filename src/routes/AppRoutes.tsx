@@ -6,6 +6,7 @@ import Promociones from "../screens/Promociones";
 import Menu from "../screens/Menu";
 import Pedido from "../screens/Pedido";
 import Registro from "../screens/Registro";
+import RequireAuth from "../components/auth0/RequireAuth";
 
 export const AppRoutes: React.FC = () => {
     return (
@@ -16,7 +17,7 @@ export const AppRoutes: React.FC = () => {
                 <Route path="/menu" element={<Menu />} />
                 <Route path="/promociones" element={<Promociones />} />
                 <Route path="/pedido" element={<Pedido />}/>
-                <Route path="/registro" element={<Registro />} />
+                <Route path="/registro" element={<RequireAuth><Registro /></RequireAuth>} />
             </Route>
         </Routes>
     );

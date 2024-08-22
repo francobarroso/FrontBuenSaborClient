@@ -1,4 +1,4 @@
-import { Alert, Box, Grid, MenuItem, Select, Typography } from "@mui/material";
+import { Alert, Box, Grid, Link, MenuItem, Select, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Sucursal from "../types/Sucursal";
 import { SucursalGetByEmpresaId } from "../services/SucursalService";
@@ -10,6 +10,7 @@ import PromocionCard from "../components/iu/Promocion/PromocionCard";
 import Carrito from "../components/iu/Carrito/Carrito";
 import colorConfigs from "../configs/colorConfig";
 import { useAuth0 } from "@auth0/auth0-react";
+import { ClienteExist } from "../services/ClienteService";
 
 const Promociones = () => {
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -17,7 +18,8 @@ const Promociones = () => {
     const [sucursalNombre, setCurrentSucursalNombre] = useState("");
     const [sucursalHorario, setCurrentSucursalHorario] = useState("");
     const [priceOrder, setPriceOrder] = useState("asc");
-    const { isAuthenticated } = useAuth0();
+    const [cliente, setCliente] = useState<boolean | null>(null);
+    const { isAuthenticated, user } = useAuth0();
 
     const getAllSucursal = async () => {
         const sucursales: Sucursal[] = await SucursalGetByEmpresaId(1);
@@ -27,6 +29,11 @@ const Promociones = () => {
     const getAllPromociones = async () => {
         const promociones: Promocion[] = await PromocionFindByEcommerce();
         setPromociones(promociones);
+    }
+
+    const getCliente = async (email: string) => {
+        const cliente: boolean = await ClienteExist(email);
+        setCliente(cliente);
     }
 
     const handlePriceOrderChange = (event: any) => {
@@ -40,6 +47,10 @@ const Promociones = () => {
     };
 
     useEffect(() => {
+        if (isAuthenticated && user?.name) {
+            getCliente(user.name);
+        }
+
         getAllSucursal();
         getAllPromociones();
         const sucursalNombre = localStorage.getItem('sucursalNombre');
@@ -108,6 +119,13 @@ const Promociones = () => {
                         <Box mt={2}>
                             <Alert variant="outlined" severity="info">
                                 Para realizar pedidos debe tener<br />una cuenta en el sistema.
+                            </Alert>
+                        </Box>
+                    )}
+                    {isAuthenticated && !cliente && (
+                        <Box mt={2}>
+                            <Alert variant="outlined" severity="warning">
+                                Para realizar pedidos termine de<br />completar su <Link href="/registro" underline="hover">registro</Link>.
                             </Alert>
                         </Box>
                     )}

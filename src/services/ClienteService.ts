@@ -30,3 +30,16 @@ export async function ClienteGetByEmail(email: string){
 
     return await response.json() as Cliente;
 }
+
+export async function ClienteExist(email: string){
+	const urlServer = 'http://localhost:8080/cliente/exist?email=' + email;
+	const response = await fetch(urlServer, {
+		method: 'GET',
+        headers: {
+			'Content-type': 'application/json'
+		},
+        mode: 'cors'
+	});
+
+    return await response.json() as boolean;
+}
