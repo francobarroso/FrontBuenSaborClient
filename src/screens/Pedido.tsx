@@ -156,7 +156,7 @@ const Pedido = () => {
             <Box mt={3} ml={3} mr={3} display="flex" alignItems="flex-start">
                 <Box padding={2} flexBasis="50%" flexGrow={1} mx={2} sx={{ border: "1px solid #c5c5c5", borderRadius: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                     <Box mb={3}>
-                        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Elegí el tipo de envio</Typography>
+                        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Elegí el tipo de envío</Typography>
                         <FormControl sx={{ mt: 5 }}>
                             <RadioGroup
                                 aria-labelledby="tipo-envio-label"
@@ -164,7 +164,7 @@ const Pedido = () => {
                                 onChange={handleRadioChange}
                             >
                                 <FormControlLabel value={TipoEnvio.DELIVERY} control={<Radio />} label={<Typography sx={{ fontWeight: 'bold' }}>
-                                    Envio a domicilio (Solo MecadoPago)
+                                    Envío a domicilio (Solo MercadoPago)
                                 </Typography>} />
                                 <FormControl fullWidth error={!!errors.domicilio}>
                                     <Select
