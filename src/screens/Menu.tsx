@@ -70,8 +70,8 @@ const Menu = () => {
     };
 
     useEffect(() => {
-        if (isAuthenticated && user?.name) {
-            getCliente(user.name);
+        if (isAuthenticated && user?.email) {
+            getCliente(user.email);
         }
 
         const fetchData = async () => {

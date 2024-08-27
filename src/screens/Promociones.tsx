@@ -47,8 +47,8 @@ const Promociones = () => {
     };
 
     useEffect(() => {
-        if (isAuthenticated && user?.name) {
-            getCliente(user.name);
+        if (isAuthenticated && user?.email) {
+            getCliente(user.email);
         }
 
         getAllSucursal();

@@ -146,8 +146,8 @@ const Pedido = () => {
             setCarrito(JSON.parse(carrito));
         }
 
-        if (user?.name) {
-            getCliente(user.name);
+        if (user?.email) {
+            getCliente(user.email);
         }
     }, [user]);
 

@@ -236,7 +236,7 @@ const Registro = () => {
         }
 
         if (user && cliente.usuario) {
-            cliente.usuario.email = user.name ?? null;
+            cliente.usuario.email = user.email ?? null;
             const auth0Id = isAuthenticated && user?.sub ? user.sub.replace("auth0|", "") : "";
             cliente.usuario.auth0Id = auth0Id;
         }
