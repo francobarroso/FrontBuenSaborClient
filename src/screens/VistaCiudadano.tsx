@@ -6,16 +6,23 @@ import portada from '../assets/images/imgPortada.png';
 import { useEffect, useState } from 'react';
 import Sucursal from '../types/Sucursal';
 import { SucursalGetByEmpresaId } from '../services/SucursalService';
-import CategoriaGetDto from '../types/CategoriaGetDto';
-import { CategoriaByEcommerce } from '../services/CategoriaService';
+import Categoria from '../types/Categoria';
 import SucursalCard from '../components/iu/Sucursal/SucursalCard';
+import { CategoriaAllByEcommerce } from '../services/CategoriaService';
+import { useAuth0 } from '@auth0/auth0-react';
+import { ClienteExist, ClienteGetByEmail } from '../services/ClienteService';
+import { useAppDispatch } from '../redux/hook';
+import { setCliente } from '../redux/slices/clienteSlice';
+import { setUser } from '../redux/slices/userSlice';
 
 const VistaCiudadano = () => {
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
-    const [categorias, setCategorias] = useState<CategoriaGetDto[]>([]);
-    
+    const [categorias, setCategorias] = useState<Categoria[]>([]);
+    const { isAuthenticated, user } = useAuth0();
+    const dispatch = useAppDispatch();
+
     const getAllCategorias = async () => {
-        const categorias: CategoriaGetDto[] = await CategoriaByEcommerce();
+        const categorias: Categoria[] = await CategoriaAllByEcommerce();
         setCategorias(categorias);
     };
 
@@ -28,8 +35,26 @@ const VistaCiudadano = () => {
         getAllSucursal();
         getAllCategorias();
         localStorage.removeItem('categoria');
-        localStorage.removeItem('sucursal');
         localStorage.removeItem('carrito');
+
+        const clienteExist = async () => {
+            if (user && user.email) {
+                const cliente: boolean = await ClienteExist(user.email);
+                dispatch(setCliente(cliente));
+            }
+        }
+
+        const traerUser = async () => {
+            if(user && user.email) {
+                const usuario = await ClienteGetByEmail(user.email);
+                dispatch(setUser(usuario));
+            }
+        }
+
+        if (isAuthenticated && user) {
+            clienteExist();
+            traerUser();
+        }
     }, []);
 
     const handleClick = (denominacion: string) => {
@@ -109,7 +134,7 @@ const VistaCiudadano = () => {
             }}>
                 <h1 style={{ marginLeft: '30px', color: 'white', fontSize: '1.7rem', textAlign: 'left' }}>Sucursales</h1>
             </div>
-            <div style={{backgroundImage: `url(${fondoMarron})`}}>
+            <div style={{ backgroundImage: `url(${fondoMarron})` }}>
 
                 <div style={{
                     display: 'flex',

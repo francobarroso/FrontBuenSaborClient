@@ -1,19 +1,19 @@
 import { Box, Typography } from "@mui/material";
-import CategoriaGetDto from "../types/CategoriaGetDto";
 import { useEffect, useState } from "react";
-import { CategoriaByEcommerce } from "../services/CategoriaService";
+import { CategoriaAllByEcommerce } from "../services/CategoriaService";
 import fondoNegro from '../assets/images/fondoNegroCarrousel.jpg';
 import Sucursal from "../types/Sucursal";
 import { SucursalGetByEmpresaId } from "../services/SucursalService";
 import SucursalCard from "../components/iu/Sucursal/SucursalCard";
+import Categoria from "../types/Categoria";
 
 const Sucursales = () => {
-    const [categorias, setCategorias] = useState<CategoriaGetDto[]>([]);
+    const [categorias, setCategorias] = useState<Categoria[]>([]);
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
     const [currentCategoria, setCurrentCategoria] = useState("Todas");
 
     const getAllCategorias = async () => {
-        const categorias: CategoriaGetDto[] = await CategoriaByEcommerce();
+        const categorias: Categoria[] = await CategoriaAllByEcommerce();
         setCategorias(categorias);
     };
 

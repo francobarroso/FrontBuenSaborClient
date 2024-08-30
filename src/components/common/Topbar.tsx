@@ -18,14 +18,50 @@ import MenuIcon from "@mui/icons-material/Menu";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import RegisterButton from "./RegisterButton";
 import { useNavigate } from "react-router-dom";
+import { SucursalGetByEmpresaId } from "../../services/SucursalService";
+import { useAppDispatch } from "../../redux/hook";
+import { setSucursal } from "../../redux/slices/sucursalSlice";
 
 const Topbar = () => {
   const { isAuthenticated } = useAuth0();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const setData = () => {
+    const traerSucursales = async () => {
+      const sucursales = await SucursalGetByEmpresaId(1);
+      const sucursalMatriz = sucursales.find(sucursal => sucursal.esCasaMatriz);
+      if (sucursalMatriz) dispatch(setSucursal(sucursalMatriz));
+    }
+
+    traerSucursales();
+  }
 
   const handleMenu = () => {
+    if (window.location.pathname.includes("menu")) {
+      navigate("/menu");
+      return;
+    } else if(window.location.pathname.includes("promociones")){
+      navigate("/menu");
+      return;
+    }
+
     localStorage.removeItem('categoria');
+    setData();
     navigate("/menu");
+  }
+
+  const handlePromociones = () => {
+    if (window.location.pathname.includes("promociones")) {
+      navigate("/promociones");
+      return;
+    } else if (window.location.pathname.includes("menu")) {
+      navigate("/promociones");
+      return;
+    }
+  
+    setData();
+    navigate("/promociones");
   }
 
   return (
@@ -54,7 +90,7 @@ const Topbar = () => {
           <Avatar
             src={avatarImage}
             sx={{ width: 50, height: 50, cursor: "pointer" }}
-            onClick={() =>  window.location.href = "/"}
+            onClick={() => window.location.href = "/"}
           />
           <Typography
             variant="h5"
@@ -98,7 +134,7 @@ const Topbar = () => {
           <Divider orientation="vertical" flexItem sx={{ bgcolor: "#EEEEEE" }} />
 
           <IconButton
-            onClick={() => navigate("/promociones")}
+            onClick={handlePromociones}
             sx={{
               color: "#EEEEEE",
               "&:hover": { color: "#5f7faf", backgroundColor: "#233044" },

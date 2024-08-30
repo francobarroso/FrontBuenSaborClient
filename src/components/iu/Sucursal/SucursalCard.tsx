@@ -3,6 +3,8 @@ import { Card, CardContent, Typography, CardActionArea, CardMedia } from '@mui/m
 import { useNavigate } from 'react-router-dom';
 import Sucursal from '../../../types/Sucursal';
 import sucursalImage from '../../../assets/images/sucursal.png';
+import { useAppDispatch } from '../../../redux/hook';
+import { setSucursal } from '../../../redux/slices/sucursalSlice';
 
 interface SucursalCardProps {
     sucursal: Sucursal;
@@ -10,9 +12,10 @@ interface SucursalCardProps {
 
 const SucursalCard: React.FC<SucursalCardProps> = ({ sucursal }) => {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const handleClick = () => {
-        localStorage.setItem("sucursal", JSON.stringify(sucursal));
+        dispatch(setSucursal(sucursal));
         navigate('/menu');
         window.scrollTo(0, 0);
     };

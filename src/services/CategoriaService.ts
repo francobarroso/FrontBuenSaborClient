@@ -33,8 +33,8 @@ export async function CategoriaByEmpresaGetAll(id: number, token: string){
 	return await response.json() as CategoriaGetDto[];
 }
 
-export async function CategoriaByEcommerce(){
-	const urlServer = 'http://localhost:8080/categoria/findByEcommerce';
+export async function CategoriaByEcommerce(id: number){
+	const urlServer = 'http://localhost:8080/categoria/findByEcommerce/' + id;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
@@ -45,13 +45,24 @@ export async function CategoriaByEcommerce(){
 	return await response.json() as CategoriaGetDto[];
 }
 
-export async function CategoriaGetAll(token: string){
+export async function CategoriaAllByEcommerce(){
+	const urlServer = 'http://localhost:8080/categoria/findByEcommerce';
+	const response = await fetch(urlServer, {
+		method: 'GET',
+        headers: {
+			'Content-type': 'application/json'
+		},
+        mode: 'cors'
+	});
+	return await response.json() as Categoria[];
+}
+
+export async function CategoriaGetAll(){
 	const urlServer = 'http://localhost:8080/categoria';
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
-			'Authorization': `Bearer ${token}`,
-			'Content-type': 'application/json',
+			'Content-type': 'application/json'
 		},
         mode: 'cors'
 	});

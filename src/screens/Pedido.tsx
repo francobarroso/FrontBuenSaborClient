@@ -2,7 +2,6 @@ import { Box, Button, FormControl, FormControlLabel, FormHelperText, MenuItem, R
 import Carrito from "../components/iu/Carrito/Carrito";
 import colorConfigs from "../configs/colorConfig";
 import { useEffect, useState } from "react";
-import Sucursal from "../types/Sucursal";
 import type Pedido from "../types/Pedido";
 import { TipoEnvio } from "../types/enums/TipoEnvio";
 import DetallePedido from "../types/DetallePedido";
@@ -14,22 +13,21 @@ import { createPreferenceMP, PedidoSave } from "../services/Pedido";
 import CheckoutMP from "../components/iu/Carrito/CheckoutMP";
 import { useCarrito } from "../hooks/useCarrito";
 import { toast } from "react-toastify";
-import Cliente from "../types/Cliente";
-import { ClienteGetByEmail } from "../services/ClienteService";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useAppSelector } from "../redux/hook";
 
 const emptyPedido = { id: null, eliminado: false, total: 0, estado: null, tipoEnvio: null, formaPago: null, domicilio: null, sucursal: undefined, cliente: undefined, detallePedidos: undefined, empleado: undefined }
 
 const Pedido = () => {
-    const [sucursal, setSucursal] = useState<Sucursal | null>(null);
     const [carrito, setCarrito] = useState<DetallePedido[]>();
     const [pedido, setPedido] = useState<Pedido>(emptyPedido);
     const [open, setOpen] = useState(false);
     const { totalPedido } = useCarrito();
     const [idPreference, setIdPreference] = useState<string>('');
-    const [cliente, setCliente] = useState<Cliente>();
     const { user } = useAuth0();
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const usuarioRedux = useAppSelector((state) => state.user.user);
+    const sucursalRedux = useAppSelector((state) => state.sucursal.sucursal);
 
     const SavePedido = async (pedido: Pedido) => {
         return PedidoSave(pedido);
@@ -42,11 +40,6 @@ const Pedido = () => {
         }
     };
 
-    const getCliente = async (email: string) => {
-        const cliente: Cliente = await ClienteGetByEmail(email);
-        setCliente(cliente);
-    }
-
     const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedTipoEnvio = (event.target as HTMLInputElement).value as TipoEnvio;
         setPedido((prevPedido) => ({
@@ -57,7 +50,7 @@ const Pedido = () => {
 
     const handleDomicilioChange = (e: SelectChangeEvent<number>) => {
         const domicilioId = e.target.value as number;
-        const domicilio = cliente?.domicilios.find(d => d.id === domicilioId);
+        const domicilio = usuarioRedux?.domicilios.find(d => d.id === domicilioId);
         if (domicilio) {
             setPedido(prevPedido => ({
                 ...prevPedido,
@@ -90,65 +83,52 @@ const Pedido = () => {
     }
 
     const handleSubmit = async () => {
-        const updatedPedido = {
-            ...pedido,
-            estado: pedido.tipoEnvio === TipoEnvio.DELIVERY ? Estado.PREPARACION : Estado.PENDIENTE,
-            formaPago: pedido.tipoEnvio === TipoEnvio.DELIVERY ? FormaPago.MERCADO_PAGO : FormaPago.EFECTIVO,
-            detallePedidos: carrito,
-            total: totalPedido,
-            sucursal: sucursal || pedido.sucursal,
-            cliente: cliente,
-            domicilio: pedido.domicilio || cliente?.domicilios?.[0] || null
-        };
+        if (usuarioRedux && sucursalRedux) {
+            const updatedPedido = {
+                ...pedido,
+                estado: pedido.tipoEnvio === TipoEnvio.DELIVERY ? Estado.PREPARACION : Estado.PENDIENTE,
+                formaPago: pedido.tipoEnvio === TipoEnvio.DELIVERY ? FormaPago.MERCADO_PAGO : FormaPago.EFECTIVO,
+                detallePedidos: carrito,
+                total: totalPedido,
+                sucursal: sucursalRedux || pedido.sucursal,
+                cliente: usuarioRedux,
+                domicilio: pedido.domicilio || usuarioRedux.domicilios?.[0] || null
+            };
 
-        if(updatedPedido.formaPago === FormaPago.MERCADO_PAGO && !validate()){
-            return;
-        }
-
-        try {
-            const data = await SavePedido(updatedPedido);
-            if (data.status !== 200) {
-                toast.error("Error al realizar el pedido, intente más tarde.", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored"
-                });
+            if (updatedPedido.formaPago === FormaPago.MERCADO_PAGO && !validate()) {
                 return;
-            } else if (data.data.formaPago === FormaPago.MERCADO_PAGO) {
-                MercadoPago(updatedPedido);
-            } else {
-                setOpen(true);
             }
-        } catch (error) {
-            console.log("Error al dar de baja un articulo insumo");
+            try {
+                const data = await SavePedido(updatedPedido);
+                if (data.status !== 200) {
+                    toast.error("Error al realizar el pedido, intente más tarde.", {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored"
+                    });
+                    return;
+                } else if (data.data.formaPago === FormaPago.MERCADO_PAGO) {
+                    MercadoPago(updatedPedido);
+                } else {
+                    setOpen(true);
+                }
+            } catch (error) {
+                console.log("Error al dar de baja un articulo insumo");
+            }
         }
-
     }
 
     useEffect(() => {
-        const sucursal = localStorage.getItem("sucursal");
-        if (sucursal) {
-            setSucursal(JSON.parse(sucursal));
-        } else {
-            const sucursalMatriz = localStorage.getItem("sucursalMatriz");
-            if (sucursalMatriz) {
-                setSucursal(JSON.parse(sucursalMatriz));
-            }
-        }
-
         const carrito = localStorage.getItem("carrito");
         if (carrito) {
             setCarrito(JSON.parse(carrito));
         }
 
-        if (user?.email) {
-            getCliente(user.email);
-        }
     }, [user]);
 
     return (
@@ -175,7 +155,7 @@ const Pedido = () => {
                                         disabled={pedido.tipoEnvio !== TipoEnvio.DELIVERY}
                                     >
                                         <MenuItem value="" disabled>Seleccione su Domicilio</MenuItem>
-                                        {cliente?.domicilios.map(domicilio => (
+                                        {usuarioRedux && usuarioRedux.domicilios.map(domicilio => (
                                             <MenuItem key={domicilio.id} value={domicilio.id}>
                                                 {domicilio.calle}, {domicilio.numero}, {domicilio.localidad.nombre}, {domicilio.localidad.provincia.nombre}
                                             </MenuItem>
@@ -187,7 +167,7 @@ const Pedido = () => {
                                     Retiro en Local (Solo Efectivo)
                                 </Typography>} />
                                 <Typography mb={3} variant="body2">
-                                    {sucursal?.domicilio.calle} {sucursal?.domicilio.numero}, {sucursal?.domicilio.localidad?.nombre}, {sucursal?.domicilio.localidad?.provincia.nombre}
+                                    {sucursalRedux?.domicilio.calle} {sucursalRedux?.domicilio.numero}, {sucursalRedux?.domicilio.localidad?.nombre}, {sucursalRedux?.domicilio.localidad?.provincia.nombre}
                                 </Typography>
                             </RadioGroup>
                         </FormControl>
@@ -211,7 +191,7 @@ const Pedido = () => {
                     )}
                 </Box>
             </Box>
-            <PedidoEnviadoModal pedido={pedido} sucursal={sucursal} onClose={handleClose} open={open} />
+            <PedidoEnviadoModal pedido={pedido} sucursal={sucursalRedux} onClose={handleClose} open={open} />
         </>
     );
 }
