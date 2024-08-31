@@ -41,7 +41,7 @@ const Topbar = () => {
     if (window.location.pathname.includes("menu")) {
       navigate("/menu");
       return;
-    } else if(window.location.pathname.includes("promociones")){
+    } else if (window.location.pathname.includes("promociones")) {
       navigate("/menu");
       return;
     }
@@ -59,7 +59,7 @@ const Topbar = () => {
       navigate("/promociones");
       return;
     }
-  
+
     setData();
     navigate("/promociones");
   }
@@ -73,8 +73,6 @@ const Topbar = () => {
         boxShadow: "unset",
         backgroundColor: colorConfigs.topbar.bg,
         color: colorConfigs.topbar.color,
-        borderBottomLeftRadius: "20px",
-        borderBottomRightRadius: "20px",
         padding: "0 20px",
       }}
     >

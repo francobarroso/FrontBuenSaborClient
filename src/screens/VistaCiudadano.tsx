@@ -14,6 +14,7 @@ import { ClienteExist, ClienteGetByEmail } from '../services/ClienteService';
 import { useAppDispatch } from '../redux/hook';
 import { setCliente } from '../redux/slices/clienteSlice';
 import { setUser } from '../redux/slices/userSlice';
+import { Box } from '@mui/material';
 
 const VistaCiudadano = () => {
     const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -45,7 +46,7 @@ const VistaCiudadano = () => {
         }
 
         const traerUser = async () => {
-            if(user && user.email) {
+            if (user && user.email) {
                 const usuario = await ClienteGetByEmail(user.email);
                 dispatch(setUser(usuario));
             }
@@ -65,92 +66,138 @@ const VistaCiudadano = () => {
 
     return (
         <>
-            {//IMAGEN PRINCIPAL
-            }
-            <div style={{ position: 'relative', width: '100%' }}>
-                <img src={portada} alt="Imagen principal" style={{ height: 'auto', width: '100%' }} />
-                {//banner de CATEGORIAS
-                }
-                <div style={{
-                    position: 'absolute',
-                    bottom: '-20px',
+            {/* Contenedor Principal */}
+            <div style={{ width: '100%' }}>
+
+                {/* Imagen Principal */}
+                <div style={{ position: 'relative', width: '100%' }}>
+                <img src={portada} alt="Imagen principal" style={{ width: '100%', height: 'auto' }} />
+                    {/* Banner de Categorías */}
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            bottom: '-20px',
+                            height: '80px',
+                            width: '100%',
+                            backgroundColor: '#233044',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                            paddingLeft: '16px',
+                            fontSize: '24px',
+                            color: 'white',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        Categorías
+                    </Box>
+                </div>
+
+                {/* Apartado de Carrusel */}
+                <div
+                    style={{
+                        backgroundImage: `url(${fondoNegro})`,
+                        backgroundSize: 'cover',
+                        width: '100%',
+                        height: 'auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: '20px',
+                    }}
+                >
+                    <div
+                        style={{
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            fontFamily: 'Arial Black',
+                        }}
+                    >
+                        <h1
+                            style={{
+                                lineHeight: '2.0',
+                                letterSpacing: '0.15em',
+                                color: 'white',
+                                fontSize: '3rem',
+                                textAlign: 'center',
+                            }}
+                        >
+                            ¡ NUESTRAS<br /> VARIEDADES !
+                        </h1>
+                    </div>
+
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            justifyContent: 'center',
+                            marginTop: '20px',
+                            padding: '20px',
+                            gap: '10px',
+                        }}
+                    >
+                        {categorias.map((categoria) => (
+                            <button
+                                key={categoria.id}
+                                style={{
+                                    backgroundColor: '#3498db',
+                                    border: 'none',
+                                    borderRadius: '20px',
+                                    color: 'white',
+                                    padding: '10px 20px',
+                                    fontSize: '1.2rem',
+                                    cursor: 'pointer',
+                                    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                                    transition: 'background-color 0.3s ease',
+                                }}
+                                onClick={() => handleClick(categoria.denominacion)}
+                            >
+                                {categoria.denominacion}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Banner de Sucursales */}
+                <Box sx={{
+                    position: 'relative',
                     height: '80px',
                     width: '100%',
                     backgroundColor: '#233044',
-                    borderTopLeftRadius: '20px',
-                    borderTopRightRadius: '20px'
-                }}>
-
-                    <h1 style={{ marginTop: '20px', marginLeft: '30px', color: 'white', fontSize: '1.7rem', textAlign: 'left' }}>Categorías</h1>
-                </div>
-            </div>
-            {//APARTADO DE CARROUSEL
-            }
-            <div style={{ backgroundImage: `url(${fondoNegro})`, backgroundSize: 'cover', width: '100%', height: '500px', display: 'flex', alignItems: 'center' }}>
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'left', fontFamily: 'Arial Black' }}>
-                    <h1 style={{ lineHeight: '2.0', letterSpacing: '0.15em', color: 'white', fontSize: '3rem', textAlign: 'center' }}>¡ NUESTRAS<br /> VARIEDADES !</h1>
-                </div>
-
-                <div style={{
                     display: 'flex',
-                    flexWrap: 'wrap',
-                    justifyContent: 'center',
-                    marginTop: '20px',
-                    padding: '20px',
-                    gap: '10px',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    paddingLeft: '16px',
+                    zIndex: 100,
+                    fontSize: '24px',
+                    color: 'white',
+                    fontWeight: 'bold',
                 }}>
-                    {categorias.map((categoria) => (
-                        <button
-                            key={categoria.id}
-                            style={{
-                                backgroundColor: '#3498db', // Color azulado
-                                border: 'none',
-                                borderRadius: '20px',
-                                color: 'white',
-                                padding: '10px 20px',
-                                fontSize: '1.2rem',
-                                cursor: 'pointer',
-                                boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-                                transition: 'background-color 0.3s ease',
-                            }}
-                            onClick={() => handleClick(categoria.denominacion)}
-                        >
-                            {categoria.denominacion}
-                        </button>
-                    ))}
-                </div>
-            </div>
-            {//banner de SUCURSALES
-            }
-            <div style={{
-                bottom: '-30px',
-                height: '80px',
-                width: '100%',
-                backgroundColor: '#233044',
-
-                paddingTop: '25px', /* Espacio a la izquierda del texto */
-                zIndex: 100 /* Asegura que el banner esté sobre el carrousel */
-
-            }}>
-                <h1 style={{ marginLeft: '30px', color: 'white', fontSize: '1.7rem', textAlign: 'left' }}>Sucursales</h1>
-            </div>
-            <div style={{ backgroundImage: `url(${fondoMarron})` }}>
-
-                <div style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '16px',
-                    justifyContent: 'center',
-                    marginTop: '16px',
-                    padding: '10px',
-                }}>
-                    {sucursales.map((sucursal) => (
-                        <SucursalCard key={sucursal.id} sucursal={sucursal} />
-                    ))}
-
+                    Sucursales
+                </Box>
+                {/* Tarjetas de Sucursales */}
+                <div style={{ backgroundImage: `url(${fondoMarron})`, padding: '20px', height: 'auto' }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: '16px',
+                            justifyContent: 'center',
+                            marginTop: '16px',
+                        }}
+                    >
+                        {sucursales.map((sucursal) => (
+                            <SucursalCard key={sucursal.id} sucursal={sucursal} />
+                        ))}
+                    </div>
                 </div>
 
             </div>
+
 
         </>
     );
