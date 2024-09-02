@@ -1,7 +1,8 @@
 import Localidad from "../types/Localidad";
+const apiUrl = import.meta.env.VITE_API_SERVER_URL;
 
 export async function LocalidadGetAllByProvincia(id: number){
-	const urlServer = 'http://localhost:8080/localidad/findByProvincia/' + id;
+	const urlServer = `${apiUrl}/localidad/findByProvincia/${id}`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
@@ -13,7 +14,7 @@ export async function LocalidadGetAllByProvincia(id: number){
 }
 
 export async function LocalidadGetAll(){
-	const urlServer = 'http://localhost:8080/localidad';
+	const urlServer = `${apiUrl}/localidad`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {

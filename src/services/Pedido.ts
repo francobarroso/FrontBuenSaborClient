@@ -1,8 +1,9 @@
 import Pedido from "../types/Pedido";
 import PreferenceMP from "../types/PreferenceMP";
+const apiUrl = import.meta.env.VITE_API_SERVER_URL;
 
 export async function createPreferenceMP(pedido?:Pedido){
-    let urlServer = 'http://localhost:8080/mercadoPago/crearPreferenceMp';
+	let urlServer = `${apiUrl}/mercadoPago/crearPreferenceMp`;
 	let method:string = "POST";
     const response = await fetch(urlServer, {
 	  "method": method,
@@ -15,7 +16,7 @@ export async function createPreferenceMP(pedido?:Pedido){
 }
 
 export async function PedidoSave(pedido: Pedido){
-	const urlServer = 'http://localhost:8080/pedido';
+	const urlServer = `${apiUrl}/pedido`;
 	const response = await fetch(urlServer, {
 		method: 'POST',
 		body: JSON.stringify(pedido),

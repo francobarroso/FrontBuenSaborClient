@@ -86,7 +86,7 @@ const Pedido = () => {
         if (usuarioRedux && sucursalRedux) {
             const updatedPedido = {
                 ...pedido,
-                estado: pedido.tipoEnvio === TipoEnvio.DELIVERY ? Estado.PREPARACION : Estado.PENDIENTE,
+                estado: Estado.PENDIENTE,
                 formaPago: pedido.tipoEnvio === TipoEnvio.DELIVERY ? FormaPago.MERCADO_PAGO : FormaPago.EFECTIVO,
                 detallePedidos: carrito,
                 total: totalPedido,

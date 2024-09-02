@@ -1,7 +1,8 @@
 import Cliente from "../types/Cliente";
+const apiUrl = import.meta.env.VITE_API_SERVER_URL;
 
 export async function ClienteCreate(cliente: Cliente){
-	const urlServer = 'http://localhost:8080/cliente';
+	const urlServer = `${apiUrl}/cliente`;
 	const response = await fetch(urlServer, {
 		method: 'POST',
 		body: JSON.stringify(cliente),
@@ -19,7 +20,7 @@ export async function ClienteCreate(cliente: Cliente){
 }
 
 export async function ClienteGetByEmail(email: string){
-	const urlServer = 'http://localhost:8080/cliente/findByEmail?email=' + email;
+	const urlServer = `${apiUrl}/cliente/findByEmail?email=${email}`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
@@ -32,7 +33,7 @@ export async function ClienteGetByEmail(email: string){
 }
 
 export async function ClienteExist(email: string){
-	const urlServer = 'http://localhost:8080/cliente/exist?email=' + email;
+	const urlServer = `${apiUrl}/cliente/exist?email=${email}`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {

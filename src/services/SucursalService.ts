@@ -1,7 +1,8 @@
 import Sucursal from "../types/Sucursal";
+const apiUrl = import.meta.env.VITE_API_SERVER_URL;
 
 export async function SucursalCreate(sucursal: Sucursal, token: string){
-	const urlServer = 'http://localhost:8080/sucursal';
+	const urlServer = `${apiUrl}/sucursal`;
 	const response = await fetch(urlServer, {
 		method: 'POST',
 		body: JSON.stringify(sucursal),
@@ -20,7 +21,7 @@ export async function SucursalCreate(sucursal: Sucursal, token: string){
 }
 
 export async function SucursalGetByEmpresaId(id: number){
-	const urlServer = 'http://localhost:8080/sucursal/empresa/' + id;
+	const urlServer = `${apiUrl}/sucursal/empresa/${id}`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
@@ -32,7 +33,7 @@ export async function SucursalGetByEmpresaId(id: number){
 }
 
 export async function SucursalGetAll(token: string){
-	const urlServer = 'http://localhost:8080/sucursal';
+	const urlServer = `${apiUrl}/sucursal`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
@@ -45,7 +46,7 @@ export async function SucursalGetAll(token: string){
 }
 
 export async function SucursalGetById(id: number, token: string){
-	const urlServer = 'http://localhost:8080/sucursal/' + id;
+	const urlServer = `${apiUrl}/sucursal/${id}`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
@@ -58,7 +59,7 @@ export async function SucursalGetById(id: number, token: string){
 }
 
 export async function SucursalUpdate(sucursal: Sucursal, token: string){
-	const urlServer = 'http://localhost:8080/sucursal/' + sucursal.id;
+	const urlServer = `${apiUrl}/sucursal/${sucursal.id}`;
 	const response = await fetch(urlServer, {
 		method: 'PUT',
 		body: JSON.stringify(sucursal),

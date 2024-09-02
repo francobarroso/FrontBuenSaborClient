@@ -1,8 +1,9 @@
 import Categoria from "../types/Categoria";
 import CategoriaGetDto from "../types/CategoriaGetDto";
+const apiUrl = import.meta.env.VITE_API_SERVER_URL;
 
 export async function CategoriaCreate(categoria: Categoria, token: string){
-	const urlServer = 'http://localhost:8080/categoria';
+	const urlServer = `${apiUrl}/categoria`;
 	const response = await fetch(urlServer, {
 		method: 'POST',
 		body: JSON.stringify(categoria),
@@ -21,7 +22,7 @@ export async function CategoriaCreate(categoria: Categoria, token: string){
 }
 
 export async function CategoriaByEmpresaGetAll(id: number, token: string){
-	const urlServer = 'http://localhost:8080/categoria/findByEmpresa/' + id;
+	const urlServer = `${apiUrl}/categoria/findByEmpresa/${id}`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
@@ -34,7 +35,7 @@ export async function CategoriaByEmpresaGetAll(id: number, token: string){
 }
 
 export async function CategoriaByEcommerce(id: number){
-	const urlServer = 'http://localhost:8080/categoria/findByEcommerce/' + id;
+	const urlServer = `${apiUrl}/categoria/findByEcommerce/${id}`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
@@ -46,7 +47,7 @@ export async function CategoriaByEcommerce(id: number){
 }
 
 export async function CategoriaAllByEcommerce(){
-	const urlServer = 'http://localhost:8080/categoria/findByEcommerce';
+	const urlServer = `${apiUrl}/categoria/findByEcommerce`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
@@ -58,7 +59,7 @@ export async function CategoriaAllByEcommerce(){
 }
 
 export async function CategoriaGetAll(){
-	const urlServer = 'http://localhost:8080/categoria';
+	const urlServer = `${apiUrl}/categoria`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
@@ -70,7 +71,7 @@ export async function CategoriaGetAll(){
 }
 
 export async function CategoriaGetById(id: number, token: string){
-	const urlServer = 'http://localhost:8080/categoria/' + id;
+	const urlServer = `${apiUrl}/categoria/${id}`;
 	const response = await fetch(urlServer, {
 		method: 'GET',
         headers: {
@@ -83,7 +84,7 @@ export async function CategoriaGetById(id: number, token: string){
 }
 
 export async function CategoriaUpdate(categoria: Categoria, token: string){
-	const urlServer = 'http://localhost:8080/categoria/' + categoria.id;
+	const urlServer = `${apiUrl}/categoria/${categoria.id}`;
 	const response = await fetch(urlServer, {
 		method: 'PUT',
 		body: JSON.stringify(categoria),
@@ -102,7 +103,7 @@ export async function CategoriaUpdate(categoria: Categoria, token: string){
 }
 
 export async function CategoriaBaja(idCategoria: number, idSucursal: number, token: string){
-	const urlServer = 'http://localhost:8080/categoria/baja/' + idCategoria + "/" + idSucursal;
+	const urlServer = `${apiUrl}/categoria/baja/${idCategoria}/${idSucursal}`;
 	const response = await fetch(urlServer, {
 		method: 'DELETE',
         headers: {
@@ -120,7 +121,7 @@ export async function CategoriaBaja(idCategoria: number, idSucursal: number, tok
 }
 
 export async function CategoriaDelete(idCategoria: number, token: string){
-	const urlServer = 'http://localhost:8080/categoria/' + idCategoria;
+	const urlServer = `${apiUrl}/categoria/${idCategoria}`;
 	const response = await fetch(urlServer, {
 		method: 'DELETE',
         headers: {
