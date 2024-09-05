@@ -4,11 +4,13 @@ import { useCarrito } from "../../../hooks/useCarrito";
 import { ItemCarrito } from "./ItemCarrito";
 import colorConfigs from "../../../configs/colorConfig";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../redux/hook";
 
 const Carrito = () => {
-    const { carrito, totalPedido } = useCarrito();
+    const { totalPedido } = useCarrito();
     const navigate = useNavigate();
-    const isCarritoEmpty = carrito.length === 0;
+    const carritoRedux = useAppSelector((state) => state.carrito.carrito);
+    const isCarritoEmpty = carritoRedux.length === 0;
 
     const handlePedido = () => {
         navigate("/pedido");
@@ -27,7 +29,7 @@ const Carrito = () => {
             ) : (
                 <>
                     <Stack direction="column" spacing={2} sx={{ mb: 2 }}>
-                        {carrito.map((detalle, index) => (
+                        {carritoRedux.map((detalle, index) => (
                             <Box key={index}>
                                 <ItemCarrito
                                     item={detalle}

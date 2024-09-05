@@ -9,6 +9,7 @@ import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useAppSelector } from '../../../redux/hook';
 
 interface ProductosProps {
     articulo: ArticuloInsumo | ArticuloManufacturado;
@@ -18,11 +19,12 @@ interface ProductosProps {
 const ProductoCard: React.FC<ProductosProps> = ({ articulo, cliente }) => {
     const [open, setOpen] = useState(false);
     const [images, setImages] = useState<string[]>([]);
-    const { carrito, addCarrito, removeCarrito, removeItemCarrito } = useCarrito();
+    const { addCarrito, removeCarrito, removeItemCarrito } = useCarrito();
+    const carritoRedux = useAppSelector((state) => state.carrito.carrito);
     const { isAuthenticated } = useAuth0();
 
     const verificarArticuloCarrito = (product: ArticuloManufacturado | ArticuloInsumo) => {
-        return carrito.some(item => String(item.articulo && item.articulo.id) === String(product.id));
+        return carritoRedux.some(item => String(item.articulo && item.articulo.id) === String(product.id));
     };
 
     const isArticuloCarrito = verificarArticuloCarrito(articulo);

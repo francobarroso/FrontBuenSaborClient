@@ -36,7 +36,6 @@ const VistaCiudadano = () => {
         getAllSucursal();
         getAllCategorias();
         localStorage.removeItem('categoria');
-        localStorage.removeItem('carrito');
 
         const clienteExist = async () => {
             if (user && user.email) {
