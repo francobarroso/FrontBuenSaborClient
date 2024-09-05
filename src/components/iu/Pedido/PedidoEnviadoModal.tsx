@@ -3,6 +3,7 @@ import Pedido from "../../../types/Pedido";
 import { TipoEnvio } from "../../../types/enums/TipoEnvio";
 import Sucursal from "../../../types/Sucursal";
 import colorConfigs from "../../../configs/colorConfig";
+import { useCarrito } from "../../../hooks/useCarrito";
 
 interface PedidoProps {
     pedido: Pedido;
@@ -12,6 +13,13 @@ interface PedidoProps {
 }
 
 const PedidoEnviadoModal: React.FC<PedidoProps> = ({ pedido, sucursal, open, onClose }) => {
+    const { limpiarCarrito } = useCarrito();
+
+    const handleClose = () => {
+        limpiarCarrito();
+        onClose();
+    }
+
     return (
         <>
             <Modal open={open} onClose={onClose}>
@@ -72,7 +80,7 @@ const PedidoEnviadoModal: React.FC<PedidoProps> = ({ pedido, sucursal, open, onC
                             sx={{
                                 py: 1.5, fontWeight: 'bold', ...colorConfigs.buttonStyles
                             }}
-                            onClick={onClose}
+                            onClick={handleClose}
                         >
                             Volver al Inicio
                         </Button>

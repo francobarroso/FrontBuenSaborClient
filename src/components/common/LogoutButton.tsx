@@ -4,10 +4,12 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Avatar, Menu, MenuItem, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { useCarrito } from "../../hooks/useCarrito";
 
 const LogoutButton = () => {
   const { user, logout } = useAuth0();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const { limpiarCarrito } = useCarrito();
   const navigate = useNavigate();
 
 
@@ -21,6 +23,7 @@ const LogoutButton = () => {
 
   const handleLogout = () => {
     logout({ logoutParams: { returnTo: window.location.origin } });
+    limpiarCarrito();
     navigate('/inicio');
   };
 

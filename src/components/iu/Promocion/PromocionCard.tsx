@@ -8,7 +8,6 @@ import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useAuth0 } from "@auth0/auth0-react";
-import { useAppSelector } from "../../../redux/hook";
 
 interface PromocionProps {
     promocion: Promocion;
@@ -18,12 +17,11 @@ interface PromocionProps {
 const PromocionCard: React.FC<PromocionProps> = ({ promocion, cliente }) => {
     const [open, setOpen] = useState(false);
     const [images, setImages] = useState<string[]>([]);
-    const { addPromocionCarrito, removeCarrito, removeItemCarrito } = useCarrito();
+    const { carrito, addPromocionCarrito, removeCarrito, removeItemCarrito } = useCarrito();
     const { isAuthenticated } = useAuth0();
-    const carritoRedux = useAppSelector((state) => state.carrito.carrito);
 
     const verificarPromocionCarrito = (promocion: Promocion) => {
-        return carritoRedux.some(item => String(item.promocion && item.promocion.id) === String(promocion.id));
+        return carrito.some(item => String(item.promocion && item.promocion.id) === String(promocion.id));
     };
 
     const isPromocionCarrito = verificarPromocionCarrito(promocion);
