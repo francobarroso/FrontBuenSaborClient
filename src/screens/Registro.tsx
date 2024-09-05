@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormHelperText, Grid, MenuItem, Select, SelectChangeEvent, TextField, Tooltip, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, FormControl, FormHelperText, Grid, TextField, Tooltip, Typography } from "@mui/material";
 import { PaisGetAll } from "../services/PaisService";
 import { LocalidadGetAll } from "../services/LocalidadService";
 import { ProvinciaGetAll } from "../services/ProvinciaService";
@@ -152,8 +152,16 @@ const Registro = () => {
         setDomicilios([...domicilios, domicilioEmpty]);
     };
 
-    const handlePaisChange = (index: number, e: SelectChangeEvent<number>) => {
+    type CustomChangeEvent = {
+        target: {
+            i: unknown;
+            value: unknown;
+        };
+    };
+
+    const handlePaisChange = (e: CustomChangeEvent) => {
         const paisId = e.target.value as number;
+        const index = e.target.i as number;
 
         setDomicilios(prevDomicilios => {
             const newDomicilios = [...prevDomicilios];
@@ -181,8 +189,10 @@ const Registro = () => {
         }
     }
 
-    const handleProvinciaChange = async (index: number, e: SelectChangeEvent<number>) => {
+    const handleProvinciaChange = async (e: CustomChangeEvent) => {
         const provinciaId = e.target.value as number;
+        const index = e.target.i as number;
+
         setDomicilios(prevDomicilios => {
             const newDomicilios = [...prevDomicilios];
             newDomicilios[index] = {
@@ -206,8 +216,10 @@ const Registro = () => {
         }
     }
 
-    const handleLocalidadChange = (index: number, e: SelectChangeEvent<number>) => {
+    const handleLocalidadChange = (e: CustomChangeEvent) => {
         const localidadId = e.target.value as number;
+        const index = e.target.i as number;
+
         setDomicilios(prevDomicilios => {
             const newDomicilios = [...prevDomicilios];
             newDomicilios[index] = {
@@ -254,7 +266,7 @@ const Registro = () => {
                 theme: "colored"
             });
             return;
-        }else{
+        } else {
             setOpen(true);
         }
     }
@@ -271,7 +283,7 @@ const Registro = () => {
 
     return (
         <>
-            <Box mt={3} ml={3} mr={3}>
+            <Box mt={3} ml={3} mr={3} mb={3}>
                 <Typography variant="h5" sx={{ fontWeight: "bold" }} mb={3}>Formulario de Registro</Typography>
                 <Box padding={2} borderRadius={3} bgcolor="#f5f5f5" sx={{ border: "1px solid #c5c5c5" }} mb={2}>
                     <Typography variant="h6" gutterBottom sx={{ mb: 1 }}>
@@ -354,59 +366,69 @@ const Registro = () => {
                             <Grid container spacing={2} mt={2}>
                                 <Grid item xs={4}>
                                     <FormControl fullWidth error={!!errors.pais}>
-                                        <Select
-                                            fullWidth
-                                            value={domicilio.localidad?.provincia.pais.id || ''}
-                                            onChange={(e) => handlePaisChange(index, e)}
-                                            displayEmpty
-                                        >
-                                            <MenuItem value="" disabled>Seleccione un País</MenuItem>
-                                            {paises.map(pais => (
-                                                <MenuItem key={pais.id} value={pais.id}>
-                                                    {pais.nombre}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
+                                        <Autocomplete
+                                            options={paises}
+                                            getOptionLabel={(option) => option.nombre}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Seleccione un País"
+                                                    margin="normal"
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    error={!!errors.pais}
+                                                />
+                                            )}
+                                            value={paises.find(pais => pais.id === domicilio.localidad?.provincia.pais.id) || null}
+                                            onChange={(_, newValue) => handlePaisChange({ target: { i: index, value: newValue?.id || 0 } })}
+                                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                                        />
                                         {errors.pais && domicilio.localidad.provincia.pais.id === 0 && <FormHelperText>{errors.pais}</FormHelperText>}
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={4}>
                                     <FormControl fullWidth error={!!errors.provincia}>
-                                        <Select
-                                            fullWidth
-                                            value={domicilio.localidad?.provincia.id || ''}
-                                            onChange={(e) => handleProvinciaChange(index, e)}
-                                            displayEmpty
-                                            disabled={!domicilio.localidad?.provincia.pais.id}
-                                        >
-                                            <MenuItem value="" disabled>Seleccione una Provincia</MenuItem>
-                                            {provincias.map(provincia => (
-                                                <MenuItem key={provincia.id} value={provincia.id}>
-                                                    {provincia.nombre}
-                                                </MenuItem>
-                                            ))}
-                                        </Select>
+                                        <Autocomplete
+                                            options={provincias.filter(provincia => provincia.pais.id === domicilio.localidad.provincia.pais.id)}
+                                            getOptionLabel={(option) => option.nombre}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Seleccione una Provincia"
+                                                    margin="normal"
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    error={!!errors.provincia}
+                                                />
+                                            )}
+                                            value={provincias.find(provincia => provincia.id === domicilio.localidad?.provincia.id) || null}
+                                            onChange={(_, newValue) => handleProvinciaChange({ target: { i: index, value: newValue?.id || 0 } })}
+                                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                                            disabled={!domicilio.localidad.provincia.pais.id}
+                                        />
                                         {errors.provincia && domicilio.localidad.provincia.id === 0 && <FormHelperText>{errors.provincia}</FormHelperText>}
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={4}>
                                     <FormControl fullWidth error={!!errors.localidad}>
-                                        <Select
-                                            fullWidth
-                                            value={domicilio.localidad?.id || ''}
-                                            onChange={(e) => handleLocalidadChange(index, e)}
-                                            displayEmpty
-                                            disabled={!domicilio.localidad?.provincia.id}
-                                        >
-                                            <MenuItem value="" disabled>Seleccione una Localidad</MenuItem>
-                                            {localidades
-                                                .filter((localidad) => localidad.provincia.id === domicilio.localidad.provincia.id)
-                                                .map(localidad => (
-                                                    <MenuItem key={localidad.id} value={localidad.id}>
-                                                        {localidad.nombre}
-                                                    </MenuItem>
-                                                ))}
-                                        </Select>
+                                        <Autocomplete
+                                            options={localidades.filter(localidad => localidad.provincia.id === domicilio.localidad.provincia.id)}
+                                            getOptionLabel={(option) => option.nombre}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Seleccione una Localidad"
+                                                    margin="normal"
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    error={!!errors.localidad}
+                                                />
+                                            )}
+                                            value={localidades.find(localidad => localidad.id === domicilio.localidad?.id) || null}
+                                            onChange={(_, newValue) => handleLocalidadChange({ target: { i: index, value: newValue?.id || 0 } })}
+                                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                                            disabled={!domicilio.localidad.provincia.id}
+                                        />
                                         {errors.localidad && domicilio.localidad.id === 0 && <FormHelperText>{errors.localidad}</FormHelperText>}
                                     </FormControl>
                                 </Grid>
@@ -525,7 +547,7 @@ const Registro = () => {
                     </Button>
                 </Box>
             </Box >
-            <RegistroModal cliente={cliente} open={open} onClose={handleClose}/>
+            <RegistroModal cliente={cliente} open={open} onClose={handleClose} />
             <ToastContainer />
         </>
     )
