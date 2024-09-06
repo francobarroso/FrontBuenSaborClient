@@ -177,7 +177,7 @@ const Pedido = () => {
                             sx={{
                                 py: 1.5, fontWeight: 'bold', ...colorConfigs.buttonStyles
                             }}
-                            disabled={pedido.tipoEnvio === null}
+                            disabled={pedido.tipoEnvio === null || (carrito && carrito?.length <= 0) || sucursalRedux === null}
                             onClick={handleSubmit}
                         >
                             Finalizar Pedido

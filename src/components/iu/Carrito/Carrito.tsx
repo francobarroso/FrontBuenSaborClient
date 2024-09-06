@@ -5,11 +5,13 @@ import { ItemCarrito } from "./ItemCarrito";
 import colorConfigs from "../../../configs/colorConfig";
 import { useNavigate } from "react-router-dom";
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
+import { useAppSelector } from "../../../redux/hook";
 
 const Carrito = () => {
     const { carrito, totalPedido, limpiarCarrito } = useCarrito();
     const navigate = useNavigate();
     const isCarritoEmpty = carrito.length === 0;
+    const clienteRedux = useAppSelector((state) => state.cliente.cliente);
 
     const handlePedido = () => {
         navigate("/pedido");
@@ -46,7 +48,7 @@ const Carrito = () => {
                     </Stack>
                     <Stack direction="row" spacing={1}>
                         {
-                            !location.pathname.includes('pedido') && (
+                            !location.pathname.includes('pedido') && clienteRedux !== null && clienteRedux && (
                                 <>
                                     <Button
                                         variant="contained"
