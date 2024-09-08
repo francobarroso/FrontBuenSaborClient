@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import userSlice from "./slices/userSlice";
 import sucursalSlice from "./slices/sucursalSlice";
 import clienteSlice from "./slices/clienteSlice";
+import pedidoSlice from "./slices/pedidoSlice";
 
 const persistanceMiddleware = (store: any) => (next: any) => (action: any) => {
   next(action);
@@ -14,13 +15,17 @@ const persistanceMiddleware = (store: any) => (next: any) => (action: any) => {
   if (action.type.startsWith("cliente/")) {
     localStorage.setItem("cliente", JSON.stringify(store.getState().cliente));
   }
+  if (action.type.startsWith("pedido/")) {
+    localStorage.setItem("pedido", JSON.stringify(store.getState().pedido));
+  }
 }
 
 export const store = configureStore({
   reducer: {
     sucursal: sucursalSlice,
     user: userSlice,
-    cliente: clienteSlice
+    cliente: clienteSlice,
+    pedido: pedidoSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(persistanceMiddleware),

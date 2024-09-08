@@ -14,7 +14,8 @@ import CheckoutMP from "../components/iu/Carrito/CheckoutMP";
 import { useCarrito } from "../hooks/useCarrito";
 import { toast } from "react-toastify";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useAppSelector } from "../redux/hook";
+import { useAppDispatch, useAppSelector } from "../redux/hook";
+import { setPedidoDetalle } from "../redux/slices/pedidoSlice";
 
 const emptyPedido = { id: null, eliminado: false, total: 0, estado: null, tipoEnvio: null, formaPago: null, domicilio: null, sucursal: undefined, cliente: undefined, detallePedidos: undefined, empleado: undefined }
 
@@ -28,6 +29,10 @@ const Pedido = () => {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
     const usuarioRedux = useAppSelector((state) => state.user.user);
     const sucursalRedux = useAppSelector((state) => state.sucursal.sucursal);
+    const dispatch = useAppDispatch();
+    const pedidoRedux = useAppSelector((state) => state.pedido.pedido);
+
+    const isModalOpen = new URLSearchParams(location.search).get('detalles') === 'true';
 
     const SavePedido = async (pedido: Pedido) => {
         return PedidoSave(pedido);
@@ -98,6 +103,9 @@ const Pedido = () => {
             if (updatedPedido.formaPago === FormaPago.MERCADO_PAGO && !validate()) {
                 return;
             }
+
+            dispatch(setPedidoDetalle(updatedPedido));
+
             try {
                 const data = await SavePedido(updatedPedido);
                 if (data.status !== 200) {
@@ -129,7 +137,11 @@ const Pedido = () => {
             setCarrito(JSON.parse(carrito));
         }
 
-    }, [user]);
+        if(isModalOpen){
+            setOpen(true);
+        }
+
+    }, [user, isModalOpen]);
 
     return (
         <>
@@ -191,7 +203,7 @@ const Pedido = () => {
                     )}
                 </Box>
             </Box>
-            <PedidoEnviadoModal pedido={pedido} sucursal={sucursalRedux} onClose={handleClose} open={open} />
+            <PedidoEnviadoModal pedido={pedidoRedux ? pedidoRedux : pedido} sucursal={sucursalRedux} onClose={handleClose} open={open} />
         </>
     );
 }

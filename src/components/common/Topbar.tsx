@@ -48,7 +48,7 @@ const Topbar = () => {
 
     localStorage.removeItem('categoria');
     setData();
-    navigate("/menu");
+    window.location.href = '/menu';
   }
 
   const handlePromociones = () => {
@@ -61,7 +61,7 @@ const Topbar = () => {
     }
 
     setData();
-    navigate("/promociones");
+    window.location.href = '/promociones';
   }
 
   return (
