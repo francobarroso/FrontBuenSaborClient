@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { setPedidoDetalle } from "../redux/slices/pedidoSlice";
+import ModalEspera from "../components/iu/Pedido/ModalEspera";
 
 const emptyPedido = { id: null, eliminado: false, total: 0, estado: null, tipoEnvio: null, formaPago: null, domicilio: null, sucursal: undefined, cliente: undefined, detallePedidos: undefined, empleado: undefined }
 
@@ -31,6 +32,7 @@ const Pedido = () => {
     const sucursalRedux = useAppSelector((state) => state.sucursal.sucursal);
     const dispatch = useAppDispatch();
     const pedidoRedux = useAppSelector((state) => state.pedido.pedido);
+    const [openModalEspera, setOpenModalEspera] = useState(false);
 
     const isModalOpen = new URLSearchParams(location.search).get('detalles') === 'true';
 
@@ -87,6 +89,12 @@ const Pedido = () => {
         window.location.href = "/";
     }
 
+    const handleVisibilityChange = (visible: boolean) => {
+        if (visible) {
+            setOpenModalEspera(false);
+        }
+    };
+
     const handleSubmit = async () => {
         if (usuarioRedux && sucursalRedux) {
             const updatedPedido = {
@@ -121,6 +129,7 @@ const Pedido = () => {
                     });
                     return;
                 } else if (data.data.formaPago === FormaPago.MERCADO_PAGO) {
+                    setOpenModalEspera(true);
                     MercadoPago(updatedPedido);
                 } else {
                     setOpen(true);
@@ -194,12 +203,13 @@ const Pedido = () => {
                         >
                             Finalizar Pedido
                         </Button>
+                        <ModalEspera open={openModalEspera} />
                     </Box>
                 </Box>
                 <Box padding={2} ml={2} flexBasis="25%" flexGrow={0} sx={{ border: "1px solid #c5c5c5", borderRadius: "20px" }}>
                     <Carrito />
                     {idPreference && (
-                        <CheckoutMP idPreference={idPreference}></CheckoutMP>
+                        <CheckoutMP idPreference={idPreference} onVisibilityChange={handleVisibilityChange}></CheckoutMP>
                     )}
                 </Box>
             </Box>

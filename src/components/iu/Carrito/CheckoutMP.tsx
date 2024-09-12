@@ -2,11 +2,16 @@ import { initMercadoPago, Wallet, } from '@mercadopago/sdk-react'
 import { useEffect, useState } from 'react';
 
 interface Props {
-    idPreference: string
+    idPreference: string;
+    onVisibilityChange: (visible: boolean) => void;
 }
 
-function CheckoutMP({ idPreference }: Props) {
+function CheckoutMP({ idPreference, onVisibilityChange }: Props) {
     const [isVisible, setIsVisible] = useState(false);
+
+    const handleReady = () => {
+        onVisibilityChange(true);
+    }
 
     useEffect(() => {
         initMercadoPago("APP_USR-66a62c1b-0987-4cf7-b964-01f744297c07", {
@@ -16,8 +21,9 @@ function CheckoutMP({ idPreference }: Props) {
             setIsVisible(true);
         } else {
             setIsVisible(false);
+            onVisibilityChange(false);
         }
-    }, [idPreference]);
+    }, [idPreference, onVisibilityChange]);
 
     return (
         <>
@@ -25,6 +31,7 @@ function CheckoutMP({ idPreference }: Props) {
                 <Wallet
                     initialization={{ preferenceId: idPreference, redirectMode: "self" }}
                     customization={{ texts: { valueProp: "smart_option" } }}
+                    onReady={handleReady}
                 ></Wallet>
             </div>
         </>
